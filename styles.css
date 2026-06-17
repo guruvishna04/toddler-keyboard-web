@@ -130,6 +130,7 @@ input {
 }
 
 .given-row {
+  --picture-lane: clamp(104px, 12vw, 156px);
   background: var(--butter);
   grid-template-rows: auto 1fr;
   padding-top: clamp(72px, 7vw, 96px);
@@ -181,6 +182,10 @@ input {
   letter-spacing: 0;
   overflow-wrap: anywhere;
   text-align: center;
+}
+
+.given-row .target-word {
+  padding-inline: 0 var(--picture-lane);
 }
 
 .target-word-input {
@@ -1036,6 +1041,7 @@ details[open].settings-drawer {
   }
 
   .given-row {
+    --picture-lane: clamp(72px, 8vw, 92px);
     padding-top: 54px;
   }
 
@@ -1141,6 +1147,7 @@ details[open].settings-drawer {
   }
 
   .given-row {
+    --picture-lane: clamp(72px, 22vw, 94px);
     padding-top: 58px;
   }
 
