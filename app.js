@@ -2,9 +2,9 @@ let targetWord = "dada";
 const defaultColor = "#e53935";
 const rainbowColors = ["#e53935", "#fb8c00", "#fdd835", "#43a047", "#1e88e5", "#8e24aa"];
 const smoothVoiceDefaults = {
-  letterRate: 0.66,
-  wordRate: 0.72,
-  pitch: 1.05,
+  letterRate: 0.62,
+  wordRate: 0.68,
+  pitch: 1.02,
 };
 const wordBank = {
   "en-US": [
@@ -87,6 +87,7 @@ const fullscreenButton = document.querySelector("#fullscreen-button");
 const languageSelect = document.querySelector("#language-select");
 const celebrationLayer = document.querySelector("#celebration-layer");
 const wordStage = document.querySelector(".word-stage");
+const remoteControlKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "];
 
 function normalizeWord(value, fallback = "dada") {
   const lettersOnly = value.replace(/[^a-z]/gi, "");
@@ -118,6 +119,15 @@ function syncWordSize() {
   typedDisplay.style.setProperty("--typed-letter-size", size);
 }
 
+function formatVisibleWord(word) {
+  return capsLockOn ? word.toLocaleUpperCase(activeLanguage) : word.toLocaleLowerCase(activeLanguage);
+}
+
+function updateTargetWordDisplay() {
+  targetWordDisplay.value = formatVisibleWord(targetWord);
+  targetWordDisplay.setAttribute("aria-label", `Target word ${formatVisibleWord(targetWord)}`);
+}
+
 function loadSpeechVoices() {
   if (!("speechSynthesis" in window)) {
     return;
@@ -136,6 +146,7 @@ function speakText(text, options = {}) {
     return;
   }
 
+  loadSpeechVoices();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = activeLanguage;
   utterance.voice = voiceForLanguage(activeLanguage);
@@ -165,10 +176,7 @@ function speakWord(word) {
 }
 
 function displayLetterForTarget(rawLetter, index) {
-  if (rawLetter === rawLetter.toLocaleUpperCase()) {
-    return rawLetter.toLocaleUpperCase();
-  }
-  return rawLetter.toLocaleLowerCase();
+  return capsLockOn ? rawLetter.toLocaleUpperCase(activeLanguage) : rawLetter.toLocaleLowerCase(activeLanguage);
 }
 
 function getAudioContext() {
@@ -182,11 +190,29 @@ function getAudioContext() {
   return audioContext;
 }
 
-function playTone(frequency, duration = 0.11) {
+function unlockSound() {
+  const context = getAudioContext();
+  const markSoundReady = () => {
+    document.documentElement.dataset.soundReady = context.state;
+  };
+  if (context && context.state === "suspended") {
+    context.resume().then(markSoundReady).catch(markSoundReady);
+  }
+  if (context) {
+    markSoundReady();
+  }
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.resume();
+  }
+  loadSpeechVoices();
+}
+
+function playTone(frequency, duration = 0.11, options = {}) {
   if (!soundEnabled) {
     return;
   }
 
+  unlockSound();
   const context = getAudioContext();
   if (!context) {
     return;
@@ -194,15 +220,44 @@ function playTone(frequency, duration = 0.11) {
 
   const oscillator = context.createOscillator();
   const gain = context.createGain();
-  oscillator.type = "sine";
+  oscillator.type = options.type || "triangle";
   oscillator.frequency.value = frequency;
+  if (options.endFrequency) {
+    oscillator.frequency.exponentialRampToValueAtTime(options.endFrequency, context.currentTime + duration);
+  }
   gain.gain.setValueAtTime(0.0001, context.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.08, context.currentTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(options.volume || 0.055, context.currentTime + 0.025);
   gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + duration);
   oscillator.connect(gain);
   gain.connect(context.destination);
   oscillator.start();
   oscillator.stop(context.currentTime + duration + 0.02);
+}
+
+function playChime(notes) {
+  notes.forEach((note, index) => {
+    window.setTimeout(() => {
+      playTone(note.frequency, note.duration || 0.12, {
+        endFrequency: note.endFrequency,
+        type: note.type || "sine",
+        volume: note.volume || 0.05,
+      });
+    }, note.delay ?? index * 90);
+  });
+}
+
+function playSuccessSound() {
+  playChime([
+    { frequency: 523, duration: 0.12 },
+    { frequency: 659, duration: 0.14, delay: 95 },
+    { frequency: 784, duration: 0.18, delay: 205, volume: 0.06 },
+  ]);
+}
+
+function playRetrySound() {
+  playChime([
+    { frequency: 392, endFrequency: 330, duration: 0.18, type: "triangle", volume: 0.04 },
+  ]);
 }
 
 function renderProgressDots() {
@@ -259,6 +314,8 @@ function updateKeyCase() {
     button.textContent = capsLockOn ? key.toLocaleUpperCase() : key.toLocaleLowerCase();
   });
   capsToggle.setAttribute("aria-pressed", String(capsLockOn));
+  updateTargetWordDisplay();
+  renderTypedLetters();
 }
 
 function setHelperMood(kind = "ready") {
@@ -292,11 +349,10 @@ function checkCompletion() {
   updateNextKeyHighlight();
 
   if (current === expected) {
-    helperMessage.textContent = `You typed ${targetWord}!`;
+    helperMessage.textContent = `You typed ${formatVisibleWord(targetWord)}!`;
     setHelperMood("good");
     celebrate();
-    playTone(660, 0.16);
-    setTimeout(() => playTone(880, 0.18), 120);
+    playSuccessSound();
     setTimeout(() => speakWord(targetWord), 260);
     advanceToNextWord();
     return;
@@ -306,8 +362,9 @@ function checkCompletion() {
     helperMessage.textContent = nextInstruction();
     setHelperMood("good");
   } else {
-    helperMessage.textContent = `Try ${targetWord.split("").join(" ")}`;
+    helperMessage.textContent = `Try ${formatVisibleWord(targetWord).split("").join(" ")}`;
     setHelperMood("try");
+    playRetrySound();
   }
 }
 
@@ -329,7 +386,10 @@ function handleLetter(letter) {
 
   renderTypedLetters();
   pressVisual(rawLetter.toLocaleLowerCase(activeLanguage));
-  playTone(expectedWord().includes(rawLetter.toLocaleLowerCase(activeLanguage)) ? 520 : 360);
+  playTone(expectedWord().includes(rawLetter.toLocaleLowerCase(activeLanguage)) ? 520 : 340, 0.1, {
+    endFrequency: expectedWord().includes(rawLetter.toLocaleLowerCase(activeLanguage)) ? 620 : 300,
+    volume: 0.04,
+  });
   speakLetter(rawLetter);
   checkCompletion();
 }
@@ -345,9 +405,8 @@ function setTargetWord(value, options = {}) {
   if (Number.isInteger(options.wordIndex)) {
     wordIndex = options.wordIndex;
   }
-  targetWord = normalizeWord(value);
-  targetWordDisplay.value = targetWord;
-  targetWordDisplay.setAttribute("aria-label", `Target word ${targetWord}`);
+  targetWord = normalizeWord(value).toLocaleLowerCase(activeLanguage);
+  updateTargetWordDisplay();
   typedLetters = [];
   syncWordSize();
   renderTypedLetters();
@@ -360,17 +419,27 @@ function setManualTargetWord(value) {
   setTargetWord(value, { practiceMode: "manual" });
 }
 
-function advanceToNextWord() {
-  if (practiceMode !== "list") {
-    return;
-  }
-
+function scheduleListAdvance() {
   advanceTimer = window.setTimeout(() => {
     const words = wordListForLanguage(activeLanguage);
     wordIndex = (wordIndex + 1) % words.length;
     setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
     speakWord(targetWord);
   }, 1500);
+}
+
+function returnToListAfterManualWord() {
+  practiceMode = "list";
+  scheduleListAdvance();
+}
+
+function advanceToNextWord() {
+  if (practiceMode === "manual") {
+    returnToListAfterManualWord();
+    return;
+  }
+
+  scheduleListAdvance();
 }
 
 function pressVisual(letter) {
@@ -428,11 +497,12 @@ function celebrate() {
 }
 
 function toggleSound() {
+  unlockSound();
   soundEnabled = !soundEnabled;
   soundToggle.textContent = soundEnabled ? "Sound On" : "Sound Off";
   soundToggle.setAttribute("aria-pressed", String(soundEnabled));
   if (soundEnabled) {
-    playTone(500, 0.08);
+    playTone(500, 0.08, { endFrequency: 620 });
     speakText("Sound on", { interrupt: true });
   }
 }
@@ -440,7 +510,72 @@ function toggleSound() {
 function toggleCapsLock() {
   capsLockOn = !capsLockOn;
   updateKeyCase();
-  playTone(capsLockOn ? 560 : 360, 0.08);
+  playTone(capsLockOn ? 560 : 360, 0.08, { endFrequency: capsLockOn ? 680 : 300 });
+}
+
+function focusableControls() {
+  return Array.from(document.querySelectorAll("button, select, input"))
+    .filter((element) => !element.disabled && element.offsetParent !== null);
+}
+
+function elementCenter(element) {
+  const rect = element.getBoundingClientRect();
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2,
+  };
+}
+
+function moveFocusByDirection(key) {
+  const controls = focusableControls();
+  if (!controls.length) {
+    return;
+  }
+
+  const active = controls.includes(document.activeElement) ? document.activeElement : keyButtons.find((button) => button.classList.contains("next-key")) || controls[0];
+  if (!controls.includes(document.activeElement)) {
+    active.focus();
+    return;
+  }
+
+  const current = elementCenter(active);
+  const candidates = controls.filter((control) => control !== active).map((control) => {
+    const center = elementCenter(control);
+    const dx = center.x - current.x;
+    const dy = center.y - current.y;
+    return { control, dx, dy, distance: Math.hypot(dx, dy) };
+  }).filter(({ dx, dy }) => {
+    if (key === "ArrowRight") {
+      return dx > 8 && Math.abs(dy) < 180;
+    }
+    if (key === "ArrowLeft") {
+      return dx < -8 && Math.abs(dy) < 180;
+    }
+    if (key === "ArrowDown") {
+      return dy > 8;
+    }
+    return dy < -8;
+  });
+
+  const next = candidates.sort((a, b) => {
+    const primaryA = key === "ArrowLeft" || key === "ArrowRight" ? Math.abs(a.dx) : Math.abs(a.dy);
+    const primaryB = key === "ArrowLeft" || key === "ArrowRight" ? Math.abs(b.dx) : Math.abs(b.dy);
+    const crossA = key === "ArrowLeft" || key === "ArrowRight" ? Math.abs(a.dy) : Math.abs(a.dx);
+    const crossB = key === "ArrowLeft" || key === "ArrowRight" ? Math.abs(b.dy) : Math.abs(b.dx);
+    return crossA - crossB || primaryA - primaryB || a.distance - b.distance;
+  })[0];
+
+  if (next) {
+    next.control.focus();
+    playTone(420, 0.055, { endFrequency: 480, volume: 0.025 });
+  }
+}
+
+function activateFocusedControl() {
+  const active = document.activeElement;
+  if (active && active !== document.body && typeof active.click === "function" && active.tagName !== "INPUT" && active.tagName !== "SELECT") {
+    active.click();
+  }
 }
 
 function animateHelperTyping() {
@@ -519,7 +654,23 @@ fullscreenButton.addEventListener("click", () => {
   });
 });
 
+["pointerdown", "click", "touchstart", "keydown"].forEach((eventName) => {
+  document.addEventListener(eventName, unlockSound, { passive: true });
+});
+
 window.addEventListener("keydown", (event) => {
+  unlockSound();
+
+  if (remoteControlKeys.includes(event.key)) {
+    event.preventDefault();
+    if (event.key.startsWith("Arrow")) {
+      moveFocusByDirection(event.key);
+      return;
+    }
+    activateFocusedControl();
+    return;
+  }
+
   if (document.activeElement === wordInput) {
     return;
   }
