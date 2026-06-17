@@ -37,6 +37,20 @@ Then visit:
 http://127.0.0.1:4173
 ```
 
+## GitHub Actions CI
+
+The repository includes `.github/workflows/ci.yml`.
+
+The workflow runs on pushes to `main`, pull requests into `main`, and manual `workflow_dispatch` runs from the GitHub Actions tab. It checks the static app with:
+
+```bash
+python3 -m unittest discover tests -v
+node --check app.js
+git diff --check
+```
+
+No install step is needed because the app has no package dependencies.
+
 ## Deploy With Vercel
 
 This is a static app. **No build step** is required.
