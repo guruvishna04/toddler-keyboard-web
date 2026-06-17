@@ -1,0 +1,536 @@
+:root {
+  --ink: #202124;
+  --cream: #fff8dc;
+  --sun: #ffe66d;
+  --sky: #8bd8ff;
+  --mint: #b8f7d4;
+  --pink: #ffb3c7;
+  --purple: #c8b6ff;
+  --line: #2b2b2b;
+  --focus: #00a8a8;
+  --shadow: 0 12px 0 rgba(43, 43, 43, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  overflow: hidden;
+  color: var(--ink);
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  background:
+    linear-gradient(90deg, rgba(255, 230, 109, 0.26) 24px, transparent 1px),
+    linear-gradient(rgba(112, 214, 255, 0.22) 24px, transparent 1px),
+    linear-gradient(135deg, #fff8dc 0%, #dff8ff 48%, #e6f8dc 100%);
+  background-size: 48px 48px, 48px 48px, auto;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1240px, 100%);
+  height: 100dvh;
+  margin: 0 auto;
+  padding: clamp(8px, 1.5vw, 16px);
+  display: grid;
+  grid-template-columns: minmax(440px, 1.05fr) minmax(360px, 0.95fr);
+  grid-template-areas:
+    "stage shelf"
+    "stage keyboard";
+  gap: clamp(8px, 1.2vw, 14px);
+  align-items: stretch;
+}
+
+.word-stage {
+  grid-area: stage;
+  display: grid;
+  gap: clamp(8px, 1.2vw, 12px);
+  align-content: start;
+}
+
+.copy-card {
+  min-height: 0;
+  height: calc(100dvh - 96px);
+  padding: clamp(12px, 2vw, 24px);
+  border: 4px solid var(--line);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 16% 14%, rgba(255, 230, 109, 0.9) 0 70px, transparent 72px),
+    radial-gradient(circle at 88% 18%, rgba(139, 216, 255, 0.9) 0 80px, transparent 82px),
+    linear-gradient(165deg, #ffffff 0%, #fff4ba 50%, #e9fff3 100%);
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-rows: 1fr 1fr auto;
+  gap: clamp(10px, 1.5vw, 18px);
+}
+
+.word-row {
+  position: relative;
+  min-height: 0;
+  padding: clamp(36px, 4vw, 54px) clamp(10px, 2vw, 22px) clamp(10px, 1.6vw, 18px);
+  border: 4px solid var(--line);
+  border-radius: 24px;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  overflow: hidden;
+}
+
+.given-row {
+  background: var(--sun);
+}
+
+.type-row {
+  background: #ffffff;
+}
+
+.word-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  min-width: 76px;
+  padding: 8px 12px;
+  border: 4px solid var(--line);
+  border-radius: 999px;
+  background: var(--sky);
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  font-weight: 900;
+  text-align: center;
+}
+
+.target-word {
+  margin: 0;
+  max-width: 100%;
+  font-size: clamp(5rem, 13vw, 11rem);
+  line-height: 0.82;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.typed-display {
+  width: 100%;
+  min-height: 0;
+  padding: 12px 8px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1vw, 14px);
+  flex-wrap: wrap;
+}
+
+.typed-display.empty::before {
+  content: attr(data-placeholder);
+  color: #777777;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-weight: 900;
+}
+
+.typed-letter {
+  display: inline-block;
+  min-width: 0.56em;
+  font-size: clamp(5rem, 12vw, 10rem);
+  font-weight: 900;
+  line-height: 0.82;
+  animation: pop-in 180ms ease-out;
+}
+
+.progress-dots {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.progress-dots span {
+  width: 24px;
+  height: 24px;
+  border: 4px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.progress-dots span.done {
+  background: #43a047;
+  transform: scale(1.18);
+}
+
+.helper-message {
+  min-height: 56px;
+  margin: 0;
+  padding: 9px 14px;
+  border: 4px solid var(--line);
+  border-radius: 20px;
+  background: var(--sky);
+  box-shadow: 0 8px 0 rgba(43, 43, 43, 0.15);
+  font-size: clamp(1.35rem, 2.3vw, 2rem);
+  font-weight: 900;
+  text-align: center;
+}
+
+.control-shelf {
+  grid-area: shelf;
+  display: grid;
+  gap: clamp(8px, 1.2vw, 12px);
+}
+
+.word-editor,
+.color-tray,
+.keyboard,
+.action-row {
+  border: 4px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 9px 0 rgba(43, 43, 43, 0.15);
+}
+
+.word-editor {
+  padding: 10px;
+  background: linear-gradient(135deg, #ffffff 0%, #e9fff3 100%);
+  display: grid;
+  gap: 9px;
+  align-items: center;
+}
+
+.editor-title {
+  padding: 4px 10px;
+  border: 4px solid var(--line);
+  border-radius: 999px;
+  background: var(--sky);
+  font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+  font-weight: 900;
+  text-align: center;
+}
+
+.editor-label {
+  font-size: clamp(1.1rem, 1.7vw, 1.35rem);
+  font-weight: 900;
+}
+
+.word-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 14px;
+  border: 4px solid var(--line);
+  border-radius: 16px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-weight: 900;
+}
+
+.word-input:focus-visible {
+  outline: 5px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.word-presets {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(78px, 1fr));
+  gap: 7px;
+}
+
+.preset-button {
+  min-height: 50px;
+  border: 4px solid var(--line);
+  border-radius: 16px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: clamp(1.1rem, 1.8vw, 1.55rem);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.preset-button.selected,
+.preset-button:focus-visible {
+  outline: 5px solid var(--focus);
+  outline-offset: 2px;
+  background: var(--sun);
+}
+
+.custom-word-row {
+  display: grid;
+  grid-template-columns: auto minmax(120px, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.use-word-button {
+  min-height: 52px;
+  padding: 0 18px;
+  border: 4px solid var(--line);
+  border-radius: 16px;
+  background: var(--sun);
+  color: var(--ink);
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.use-word-button:focus-visible {
+  outline: 5px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.color-tray {
+  min-height: 82px;
+  padding: 10px;
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(42px, 1fr));
+  gap: 8px;
+}
+
+.color-button {
+  min-height: 58px;
+  border: 4px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.color-button span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 42px;
+  border-radius: 12px;
+}
+
+.rainbow-button span {
+  background: linear-gradient(90deg, #e53935, #fdd835, #43a047, #1e88e5, #8e24aa);
+}
+
+.color-button.selected,
+.color-button:focus-visible {
+  outline: 5px solid var(--focus);
+  outline-offset: 3px;
+  transform: translateY(-3px);
+}
+
+.keyboard-area {
+  grid-area: keyboard;
+  display: grid;
+  gap: clamp(8px, 1.2vw, 12px);
+  align-content: start;
+}
+
+.keyboard {
+  padding: 10px;
+  background: var(--pink);
+  display: grid;
+  grid-template-columns: repeat(7, minmax(50px, 1fr));
+  gap: 7px;
+}
+
+.key-button {
+  min-height: clamp(50px, 8.2vh, 64px);
+  border: 4px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: clamp(1.65rem, 3.1vw, 2.6rem);
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 7px 0 rgba(43, 43, 43, 0.22);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.key-button.key-focus {
+  background: var(--sky);
+}
+
+.key-button.next-key {
+  background: var(--sun);
+}
+
+.key-button:focus-visible {
+  outline: 5px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.key-button.pressed,
+.key-button:active {
+  transform: translateY(5px) scale(0.98);
+  box-shadow: 0 2px 0 rgba(43, 43, 43, 0.22);
+}
+
+.action-row {
+  min-height: 74px;
+  padding: 10px;
+  background: var(--mint);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.action-button {
+  min-height: 54px;
+  border: 4px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: clamp(1.05rem, 1.9vw, 1.4rem);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.action-button.primary {
+  background: var(--sun);
+}
+
+.action-button:focus-visible {
+  outline: 5px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.celebration-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.spark {
+  position: absolute;
+  font-size: 38px;
+  font-weight: 900;
+  animation: float-away 900ms ease-out forwards;
+}
+
+.complete {
+  animation: happy-wiggle 520ms ease-in-out;
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.65) rotate(-6deg);
+    opacity: 0.2;
+  }
+  to {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes happy-wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-1deg) scale(1.01);
+  }
+  75% {
+    transform: rotate(1deg) scale(1.01);
+  }
+}
+
+@keyframes float-away {
+  from {
+    transform: translateY(0) scale(0.75) rotate(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-170px) scale(1.35) rotate(20deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  html,
+  body {
+    height: auto;
+    min-height: 100%;
+    overflow: auto;
+  }
+
+  .app-shell {
+    min-height: auto;
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "stage"
+      "shelf"
+      "keyboard";
+  }
+
+  .copy-card {
+    height: auto;
+    min-height: 420px;
+  }
+
+  .keyboard {
+    grid-template-columns: repeat(6, minmax(58px, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .app-shell {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .copy-card {
+    padding: 12px;
+    border-radius: 22px;
+  }
+
+  .word-row {
+    min-height: 142px;
+    padding: 42px 10px 12px;
+  }
+
+  .word-label {
+    top: 10px;
+    left: 10px;
+  }
+
+  .word-editor,
+  .color-tray,
+  .keyboard,
+  .action-row {
+    border-radius: 18px;
+  }
+
+  .word-presets {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .custom-word-row {
+    grid-template-columns: 1fr;
+  }
+
+  .color-tray {
+    grid-template-columns: repeat(4, minmax(58px, 1fr));
+  }
+
+  .keyboard {
+    grid-template-columns: repeat(4, minmax(58px, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .keyboard {
+    grid-template-columns: repeat(3, minmax(72px, 1fr));
+  }
+
+  .action-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,83 @@
+import re
+import unittest
+from pathlib import Path
+
+
+APP_ROOT = Path(__file__).resolve().parents[1]
+
+
+class ToddlerKeyboardAppTests(unittest.TestCase):
+    def read(self, name):
+        return (APP_ROOT / name).read_text(encoding="utf-8")
+
+    def test_deployable_static_files_exist(self):
+        for name in ("index.html", "styles.css", "app.js", "README.md"):
+            with self.subTest(name=name):
+                self.assertTrue((APP_ROOT / name).exists(), f"{name} should exist")
+
+    def test_index_contains_dada_task_and_required_controls(self):
+        html = self.read("index.html")
+
+        self.assertIn("dada", html.lower())
+        self.assertIn('class="word-stage"', html)
+        self.assertIn('id="target-word"', html)
+        self.assertIn('id="typed-display"', html)
+        self.assertIn('id="word-input"', html)
+        self.assertIn('id="use-word-button"', html)
+        self.assertIn('id="fullscreen-button"', html)
+        self.assertIn('id="word-presets"', html)
+        self.assertIn('data-word="Dada"', html)
+        self.assertIn('data-word="DADA"', html)
+        self.assertIn('data-word="papa"', html)
+        self.assertIn('data-word="Baby"', html)
+        self.assertIn('data-word="cat"', html)
+        self.assertIn('data-word="Dog"', html)
+        self.assertIn('aria-label="Choose red"', html)
+        self.assertIn('aria-label="Choose orange"', html)
+        self.assertIn('aria-label="Choose blue"', html)
+        self.assertIn('aria-label="Choose green"', html)
+        self.assertIn('aria-label="Choose yellow"', html)
+        self.assertIn('aria-label="Choose purple"', html)
+        self.assertIn('aria-label="Choose rainbow"', html)
+        self.assertIn('data-key="d"', html)
+        self.assertIn('data-key="a"', html)
+        self.assertIn('id="sound-toggle"', html)
+
+    def test_javascript_supports_typing_colors_sound_and_completion(self):
+        js = self.read("app.js")
+
+        self.assertRegex(js, r"let\s+targetWord\s*=\s*['\"]dada['\"]")
+        self.assertIn("selectedColor", js)
+        self.assertIn("wordInput", js)
+        self.assertIn("useWordButton", js)
+        self.assertIn("fullscreenButton", js)
+        self.assertIn("setTargetWord", js)
+        self.assertIn("applyCustomWord", js)
+        self.assertIn("normalizeWord", js)
+        self.assertIn("rainbowColors", js)
+        self.assertIn("colorMode", js)
+        self.assertIn("colorForLetter", js)
+        self.assertIn("requestFullscreen", js)
+        self.assertIn("handleLetter", js)
+        self.assertIn("renderTypedLetters", js)
+        self.assertIn("AudioContext", js)
+        self.assertIn("checkCompletion", js)
+        self.assertIn("keydown", js)
+        self.assertIn("toLocaleLowerCase", js)
+        self.assertNotIn("letter.toLowerCase(),", js)
+
+    def test_css_uses_large_child_friendly_touch_targets(self):
+        css = self.read("styles.css")
+
+        self.assertIn(".word-stage", css)
+        self.assertIn(".copy-card", css)
+        self.assertIn("height: 100dvh", css)
+        self.assertIn("overflow: hidden", css)
+        self.assertIn(".key-button", css)
+        self.assertIn(".typed-display", css)
+        self.assertIn("@media", css)
+        self.assertRegex(css, re.compile(r"min-height:\s*(7[2-9]|[89][0-9])px"))
+
+
+if __name__ == "__main__":
+    unittest.main()
