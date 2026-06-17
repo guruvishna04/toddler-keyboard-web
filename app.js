@@ -1,24 +1,31 @@
 let targetWord = "dada";
 const defaultColor = "#e53935";
 const rainbowColors = ["#e53935", "#fb8c00", "#fdd835", "#43a047", "#1e88e5", "#8e24aa"];
+const languageWordSets = {
+  "en-US": ["dada", "mama", "papa", "baby", "cat", "dog", "apple", "milk", "ball", "teddy", "happy", "truck"],
+  "es-ES": ["papa", "mama", "bebe", "gato", "perro", "casa", "sol", "luna", "auto", "leche", "bola", "mano"],
+  "fr-FR": ["papa", "mama", "bebe", "chat", "ami", "lune", "auto", "lait", "main", "balle", "joie", "dodo"],
+  "de-DE": ["papa", "mama", "baby", "katze", "hund", "auto", "milch", "ball", "hand", "haus", "sonne", "teddy"],
+};
 
 let typedLetters = [];
 let selectedColor = defaultColor;
 let colorMode = "single";
 let capsLockOn = false;
 let soundEnabled = true;
+let activeLanguage = "en-US";
 let audioContext = null;
 
 const targetWordDisplay = document.querySelector("#target-word");
+const wordInput = targetWordDisplay;
 const typedDisplay = document.querySelector("#typed-display");
 const helperTruck = document.querySelector("#helper-truck");
 const helperMessageBubble = document.querySelector("#helper-message-bubble");
 const helpTypeButton = document.querySelector("#help-type-button");
-const helperMessage = document.querySelector("#helper-message");
+const helperMessage = document.querySelector("#tap-prompt");
 const progressDots = document.querySelector(".progress-dots");
-const wordInput = document.querySelector("#word-input");
-const useWordButton = document.querySelector("#use-word-button");
-const presetButtons = Array.from(document.querySelectorAll(".preset-button"));
+const presetContainer = document.querySelector("#word-presets");
+let presetButtons = Array.from(document.querySelectorAll(".preset-button"));
 const colorButtons = Array.from(document.querySelectorAll(".color-button"));
 const keyButtons = Array.from(document.querySelectorAll(".key-button"));
 const clearButton = document.querySelector("#clear-button");
@@ -26,6 +33,7 @@ const backspaceButton = document.querySelector("#backspace-button");
 const capsToggle = document.querySelector("#caps-toggle");
 const soundToggle = document.querySelector("#sound-toggle");
 const fullscreenButton = document.querySelector("#fullscreen-button");
+const languageSelect = document.querySelector("#language-select");
 const celebrationLayer = document.querySelector("#celebration-layer");
 const wordStage = document.querySelector(".word-stage");
 
@@ -48,6 +56,28 @@ function syncWordSize() {
   const size = wordSizeForLength(targetWord.length);
   targetWordDisplay.style.fontSize = size;
   typedDisplay.style.setProperty("--typed-letter-size", size);
+}
+
+function speakText(text, options = {}) {
+  if (!soundEnabled || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = activeLanguage;
+  utterance.rate = options.rate || 0.82;
+  utterance.pitch = options.pitch || 1.16;
+  utterance.volume = 1;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
+}
+
+function speakLetter(letter) {
+  speakText(letter.toLocaleUpperCase(activeLanguage), { rate: 0.72, pitch: 1.28 });
+}
+
+function speakWord(word) {
+  speakText(word, { rate: 0.78, pitch: 1.12 });
 }
 
 function displayLetterForTarget(rawLetter, index) {
@@ -103,7 +133,7 @@ function renderProgressDots() {
 function renderTypedLetters() {
   typedDisplay.innerHTML = "";
   typedDisplay.classList.toggle("empty", typedLetters.length === 0);
-  typedDisplay.dataset.placeholder = `tap ${targetWord[0].toLocaleUpperCase()}`;
+  typedDisplay.dataset.placeholder = "";
 
   typedLetters.forEach(({ letter, displayLetter, color }, index) => {
     const span = document.createElement("span");
@@ -124,11 +154,11 @@ function colorForLetter(index) {
 }
 
 function typedWord() {
-  return typedLetters.map((item) => item.letter).join("").toLocaleLowerCase();
+  return typedLetters.map((item) => item.letter).join("").toLocaleLowerCase(activeLanguage);
 }
 
 function expectedWord() {
-  return targetWord.toLocaleLowerCase();
+  return targetWord.toLocaleLowerCase(activeLanguage);
 }
 
 function updateNextKeyHighlight() {
@@ -172,6 +202,21 @@ function updatePresetSelection() {
   });
 }
 
+function renderPresetWords() {
+  presetContainer.innerHTML = "";
+  (languageWordSets[activeLanguage] || languageWordSets["en-US"]).forEach((word) => {
+    const button = document.createElement("button");
+    button.className = "preset-button";
+    button.type = "button";
+    button.dataset.word = word;
+    button.textContent = word;
+    button.addEventListener("click", () => setTargetWord(button.dataset.word));
+    presetContainer.appendChild(button);
+  });
+  presetButtons = Array.from(presetContainer.querySelectorAll(".preset-button"));
+  updatePresetSelection();
+}
+
 function nextInstruction() {
   const next = targetWord[typedLetters.length] || targetWord[0];
   return `Tap ${next.toLocaleUpperCase()}`;
@@ -189,6 +234,7 @@ function checkCompletion() {
     celebrate();
     playTone(660, 0.16);
     setTimeout(() => playTone(880, 0.18), 120);
+    setTimeout(() => speakWord(targetWord), 260);
     return;
   }
 
@@ -210,24 +256,24 @@ function handleLetter(letter) {
     typedLetters = [];
   }
 
-  const rawLetter = capsLockOn ? letter.toLocaleUpperCase() : letter.toLocaleLowerCase();
+  const rawLetter = capsLockOn ? letter.toLocaleUpperCase(activeLanguage) : letter.toLocaleLowerCase(activeLanguage);
   typedLetters.push({
-    letter: rawLetter.toLocaleLowerCase(),
+    letter: rawLetter.toLocaleLowerCase(activeLanguage),
     displayLetter: rawLetter,
     color: colorForLetter(typedLetters.length),
   });
 
   renderTypedLetters();
-  pressVisual(rawLetter);
-  playTone(expectedWord().includes(rawLetter) ? 520 : 360);
+  pressVisual(rawLetter.toLocaleLowerCase(activeLanguage));
+  playTone(expectedWord().includes(rawLetter.toLocaleLowerCase(activeLanguage)) ? 520 : 360);
+  speakLetter(rawLetter);
   checkCompletion();
 }
 
 function setTargetWord(value) {
   targetWord = normalizeWord(value);
-  targetWordDisplay.textContent = targetWord;
+  targetWordDisplay.value = targetWord;
   targetWordDisplay.setAttribute("aria-label", `Target word ${targetWord}`);
-  wordInput.value = targetWord;
   typedLetters = [];
   syncWordSize();
   renderTypedLetters();
@@ -235,10 +281,6 @@ function setTargetWord(value) {
   helperMessage.textContent = nextInstruction();
   setHelperMood("ready");
   updateNextKeyHighlight();
-}
-
-function applyCustomWord() {
-  setTargetWord(wordInput.value);
 }
 
 function pressVisual(letter) {
@@ -301,6 +343,7 @@ function toggleSound() {
   soundToggle.setAttribute("aria-pressed", String(soundEnabled));
   if (soundEnabled) {
     playTone(500, 0.08);
+    speakText("Sound on");
   }
 }
 
@@ -339,6 +382,13 @@ async function toggleFullscreen() {
   fullscreenButton.textContent = "Full";
 }
 
+function setLanguage(language) {
+  activeLanguage = language;
+  renderPresetWords();
+  setTargetWord((languageWordSets[activeLanguage] || languageWordSets["en-US"])[0]);
+  speakWord(targetWord);
+}
+
 wordInput.addEventListener("input", () => {
   const cursorWord = normalizeWord(wordInput.value, "");
   if (cursorWord !== wordInput.value) {
@@ -356,11 +406,7 @@ wordInput.addEventListener("keydown", (event) => {
   }
 });
 
-useWordButton.addEventListener("click", applyCustomWord);
-
-presetButtons.forEach((button) => {
-  button.addEventListener("click", () => setTargetWord(button.dataset.word));
-});
+languageSelect.addEventListener("change", () => setLanguage(languageSelect.value));
 
 colorButtons.forEach((button) => {
   button.addEventListener("click", () => chooseColor(button));
@@ -407,9 +453,10 @@ window.addEventListener("keydown", (event) => {
   }
 
   if (/^[a-z]$/i.test(event.key)) {
-    handleLetter(event.key.toLocaleLowerCase());
+    handleLetter(event.key.toLocaleLowerCase(activeLanguage));
   }
 });
 
+renderPresetWords();
 setTargetWord(targetWord);
 updateKeyCase();

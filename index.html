@@ -14,28 +14,33 @@
           <div class="word-row given-row">
             <span class="word-label">See</span>
             <h1 id="app-title" class="target-word">
-              <span id="target-word" aria-label="Target word dada">dada</span>
+              <input id="target-word" class="target-word-input" type="text" value="dada" maxlength="8" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Reference word">
             </h1>
           </div>
 
           <div class="word-row type-row">
             <span class="word-label">Type</span>
+            <p id="tap-prompt" class="tap-prompt" aria-live="polite">Tap D</p>
             <div
               id="typed-display"
               class="typed-display"
               aria-live="polite"
               aria-label="Typed letters"
             ></div>
-          </div>
 
-          <div class="progress-dots" aria-hidden="true"></div>
+            <div class="progress-dots" aria-hidden="true"></div>
+          </div>
         </div>
-        <p id="helper-message" class="helper-message" aria-live="polite">Pick a color. Press D and A.</p>
       </section>
 
       <section class="control-strip" aria-label="Word and color controls">
         <div class="word-editor" aria-label="Word controls">
-          <div class="editor-title">Pick a word</div>
+          <select id="language-select" class="language-select" aria-label="Choose language">
+            <option value="en-US">English</option>
+            <option value="es-ES">Spanish</option>
+            <option value="fr-FR">French</option>
+            <option value="de-DE">German</option>
+          </select>
           <div class="word-presets-scroll">
             <div id="word-presets" class="word-presets" aria-label="Choose a word">
               <button class="preset-button selected" type="button" data-word="dada">dada</button>
@@ -55,11 +60,6 @@
               <button class="preset-button" type="button" data-word="teddy">teddy</button>
               <button class="preset-button" type="button" data-word="happy">happy</button>
             </div>
-          </div>
-          <div class="custom-word-row">
-            <label class="editor-label" for="word-input">Make word</label>
-            <input id="word-input" class="word-input" type="text" value="dada" maxlength="8" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Practice word">
-            <button id="use-word-button" class="use-word-button" type="button">Use</button>
           </div>
         </div>
 
@@ -92,28 +92,34 @@
       </section>
 
       <aside id="helper-truck" class="helper-truck ready" aria-label="Helper tow truck">
-        <svg class="truck-svg" viewBox="0 0 360 220" role="img" aria-label="Friendly tow truck helper">
-          <path class="truck-boom" d="M90 96 L54 48 L48 120" fill="none"></path>
-          <path class="truck-hook" d="M48 120 q18 12 0 30" fill="none"></path>
-          <circle class="truck-light" cx="54" cy="48" r="14"></circle>
-          <rect class="truck-bed" x="44" y="112" width="250" height="54" rx="25"></rect>
-          <rect class="truck-cab" x="118" y="48" width="158" height="104" rx="30"></rect>
-          <path class="truck-hood" d="M76 112 h62 q17 0 24 17 l10 25 H76z"></path>
-          <rect class="truck-window" x="138" y="66" width="104" height="46" rx="18"></rect>
-          <rect class="truck-roof" x="142" y="31" width="100" height="25" rx="13"></rect>
-          <circle class="truck-headlight" cx="96" cy="137" r="17"></circle>
-          <circle class="truck-headlight" cx="262" cy="137" r="17"></circle>
-          <g class="truck-face">
-            <circle class="truck-eye" cx="166" cy="90" r="8"></circle>
-            <circle class="truck-eye" cx="210" cy="90" r="8"></circle>
-            <path class="truck-smile" d="M154 123 q34 24 68 0" fill="none"></path>
-            <path class="truck-frown" d="M156 137 q32 -21 64 0" fill="none"></path>
-            <circle class="truck-cheek" cx="136" cy="122" r="7"></circle>
-            <circle class="truck-cheek" cx="240" cy="122" r="7"></circle>
+        <svg class="truck-svg" viewBox="0 0 380 240" role="img" aria-label="Friendly tow truck helper">
+          <g class="truck-tilt">
+            <path class="truck-boom" d="M112 98 L72 48 L60 126" fill="none"></path>
+            <path class="truck-hook" d="M60 126 q22 12 2 34" fill="none"></path>
+            <circle class="truck-light" cx="72" cy="48" r="15"></circle>
+            <path class="truck-shadow" d="M58 190 q118 34 250 0" fill="none"></path>
+            <path class="truck-bed" d="M62 126 h198 q34 0 48 28 l8 16 H78 q-20 0 -26 -18z"></path>
+            <path class="truck-door" d="M132 72 h118 q32 0 43 31 l19 61 H116 l-10 -54 q-7 -38 26 -38z"></path>
+            <path class="truck-hood" d="M78 126 h72 q18 0 29 18 l15 26 H72 q-18 0 -22 -15z"></path>
+            <path class="truck-window" d="M146 86 h92 q20 0 28 20 l8 30 H132 l-6 -27 q-5 -23 20 -23z"></path>
+            <path class="truck-roof" d="M150 52 h94 q17 0 24 18 l4 12 H132 l3 -12 q5 -18 15 -18z"></path>
+            <circle class="truck-headlight" cx="96" cy="151" r="18"></circle>
+            <circle class="truck-headlight" cx="288" cy="151" r="18"></circle>
+            <g class="truck-face">
+              <circle class="truck-eye" cx="174" cy="111" r="8"></circle>
+              <circle class="truck-eye" cx="218" cy="111" r="8"></circle>
+              <path class="truck-smile" d="M162 140 q36 30 76 1" fill="none"></path>
+              <path class="truck-frown" d="M164 151 q34 -23 70 0" fill="none"></path>
+              <path class="truck-mouth" d="M181 147 q18 12 36 0 q-7 24 -31 21 q-9 -2 -5 -21z"></path>
+              <circle class="truck-cheek" cx="144" cy="137" r="7"></circle>
+              <circle class="truck-cheek" cx="250" cy="137" r="7"></circle>
+            </g>
+            <rect class="truck-bumper" x="94" y="170" width="172" height="22" rx="12"></rect>
+            <circle class="truck-wheel" cx="100" cy="190" r="25"></circle>
+            <circle class="truck-wheel" cx="262" cy="190" r="25"></circle>
+            <circle class="truck-wheel-core" cx="100" cy="190" r="10"></circle>
+            <circle class="truck-wheel-core" cx="262" cy="190" r="10"></circle>
           </g>
-          <rect class="truck-bumper" x="92" y="154" width="152" height="22" rx="12"></rect>
-          <circle class="truck-wheel" cx="98" cy="176" r="24"></circle>
-          <circle class="truck-wheel" cx="244" cy="176" r="24"></circle>
         </svg>
         <div class="helper-copy">
           <div id="helper-message-bubble" class="helper-message-bubble" aria-live="polite">I can help!</div>
