@@ -6,6 +6,44 @@ const smoothVoiceDefaults = {
   wordRate: 0.68,
   pitch: 1.02,
 };
+const soundClips = {
+  letter: [
+    { frequency: 520, endFrequency: 610, duration: 0.07, type: "sine", volume: 0.035 },
+  ],
+  color: [
+    { frequency: 440, endFrequency: 560, duration: 0.08, type: "sine", volume: 0.035 },
+  ],
+  move: [
+    { frequency: 360, endFrequency: 420, duration: 0.045, type: "sine", volume: 0.022 },
+  ],
+  clear: [
+    { frequency: 330, endFrequency: 260, duration: 0.09, type: "triangle", volume: 0.03 },
+  ],
+  back: [
+    { frequency: 300, endFrequency: 240, duration: 0.075, type: "triangle", volume: 0.026 },
+  ],
+  capsOn: [
+    { frequency: 520, endFrequency: 700, duration: 0.1, type: "sine", volume: 0.04 },
+  ],
+  capsOff: [
+    { frequency: 520, endFrequency: 330, duration: 0.1, type: "sine", volume: 0.034 },
+  ],
+  soundOn: [
+    { frequency: 500, duration: 0.08, type: "sine", volume: 0.034 },
+    { frequency: 650, duration: 0.1, delay: 80, type: "sine", volume: 0.04 },
+  ],
+  soundOff: [
+    { frequency: 360, endFrequency: 280, duration: 0.12, type: "triangle", volume: 0.028 },
+  ],
+  success: [
+    { frequency: 523, duration: 0.12, type: "sine", volume: 0.045 },
+    { frequency: 659, duration: 0.14, delay: 95, type: "sine", volume: 0.05 },
+    { frequency: 784, duration: 0.18, delay: 205, type: "sine", volume: 0.055 },
+  ],
+  retry: [
+    { frequency: 392, endFrequency: 330, duration: 0.18, type: "triangle", volume: 0.035 },
+  ],
+};
 const wordBank = {
   "en-US": [
     "dada", "mama", "papa", "baby", "cat", "dog", "apple", "milk", "ball", "teddy",
@@ -68,6 +106,7 @@ let practiceMode = "list";
 let advanceTimer = null;
 let audioContext = null;
 let speechVoices = [];
+let soundClipsLoaded = false;
 
 const targetWordDisplay = document.querySelector("#target-word");
 const wordInput = targetWordDisplay;
@@ -160,9 +199,9 @@ function speakText(text, options = {}) {
 }
 
 function speakLetter(letter) {
-  speakText(letter.toLocaleUpperCase(activeLanguage), {
+  speakText(letter.toLocaleLowerCase(activeLanguage), {
     rate: smoothVoiceDefaults.letterRate,
-    pitch: 1.08,
+    pitch: smoothVoiceDefaults.pitch,
     interrupt: true,
   });
 }
@@ -204,6 +243,7 @@ function unlockSound() {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.resume();
   }
+  preloadSoundClips();
   loadSpeechVoices();
 }
 
@@ -246,18 +286,23 @@ function playChime(notes) {
   });
 }
 
+function preloadSoundClips() {
+  soundClipsLoaded = true;
+  document.documentElement.dataset.soundClips = "loaded";
+  return soundClips;
+}
+
+function playSoundClip(name) {
+  const clip = soundClips[name] || soundClips.letter;
+  playChime(clip);
+}
+
 function playSuccessSound() {
-  playChime([
-    { frequency: 523, duration: 0.12 },
-    { frequency: 659, duration: 0.14, delay: 95 },
-    { frequency: 784, duration: 0.18, delay: 205, volume: 0.06 },
-  ]);
+  playSoundClip("success");
 }
 
 function playRetrySound() {
-  playChime([
-    { frequency: 392, endFrequency: 330, duration: 0.18, type: "triangle", volume: 0.04 },
-  ]);
+  playSoundClip("retry");
 }
 
 function renderProgressDots() {
@@ -353,7 +398,6 @@ function checkCompletion() {
     setHelperMood("good");
     celebrate();
     playSuccessSound();
-    setTimeout(() => speakWord(targetWord), 260);
     advanceToNextWord();
     return;
   }
@@ -386,11 +430,7 @@ function handleLetter(letter) {
 
   renderTypedLetters();
   pressVisual(rawLetter.toLocaleLowerCase(activeLanguage));
-  playTone(expectedWord().includes(rawLetter.toLocaleLowerCase(activeLanguage)) ? 520 : 340, 0.1, {
-    endFrequency: expectedWord().includes(rawLetter.toLocaleLowerCase(activeLanguage)) ? 620 : 300,
-    volume: 0.04,
-  });
-  speakLetter(rawLetter);
+  playSoundClip("letter");
   checkCompletion();
 }
 
@@ -424,7 +464,6 @@ function scheduleListAdvance() {
     const words = wordListForLanguage(activeLanguage);
     wordIndex = (wordIndex + 1) % words.length;
     setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
-    speakWord(targetWord);
   }, 1500);
 }
 
@@ -456,7 +495,7 @@ function chooseColor(button) {
   colorMode = button.dataset.colorMode === "rainbow" ? "rainbow" : "single";
   selectedColor = button.dataset.color || selectedColor || defaultColor;
   colorButtons.forEach((item) => item.classList.toggle("selected", item === button));
-  playTone(440, 0.08);
+  playSoundClip("color");
 }
 
 function clearTypedLetters() {
@@ -465,14 +504,14 @@ function clearTypedLetters() {
   helperMessage.textContent = nextInstruction();
   setHelperMood("ready");
   updateNextKeyHighlight();
-  playTone(300, 0.08);
+  playSoundClip("clear");
 }
 
 function removeLastLetter() {
   typedLetters.pop();
   renderTypedLetters();
   checkCompletion();
-  playTone(260, 0.08);
+  playSoundClip("back");
 }
 
 function celebrate() {
@@ -498,19 +537,21 @@ function celebrate() {
 
 function toggleSound() {
   unlockSound();
-  soundEnabled = !soundEnabled;
+  if (soundEnabled) {
+    playSoundClip("soundOff");
+    soundEnabled = false;
+  } else {
+    soundEnabled = true;
+    playSoundClip("soundOn");
+  }
   soundToggle.textContent = soundEnabled ? "Sound On" : "Sound Off";
   soundToggle.setAttribute("aria-pressed", String(soundEnabled));
-  if (soundEnabled) {
-    playTone(500, 0.08, { endFrequency: 620 });
-    speakText("Sound on", { interrupt: true });
-  }
 }
 
 function toggleCapsLock() {
   capsLockOn = !capsLockOn;
   updateKeyCase();
-  playTone(capsLockOn ? 560 : 360, 0.08, { endFrequency: capsLockOn ? 680 : 300 });
+  playSoundClip(capsLockOn ? "capsOn" : "capsOff");
 }
 
 function focusableControls() {
@@ -567,7 +608,7 @@ function moveFocusByDirection(key) {
 
   if (next) {
     next.control.focus();
-    playTone(420, 0.055, { endFrequency: 480, volume: 0.025 });
+    playSoundClip("move");
   }
 }
 
@@ -613,7 +654,7 @@ function setLanguage(language) {
     wordIndex = 0;
     setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
   }
-  speakWord(targetWord);
+  playSoundClip("move");
 }
 
 wordInput.addEventListener("input", () => {
@@ -701,6 +742,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 loadSpeechVoices();
+preloadSoundClips();
 if ("speechSynthesis" in window) {
   window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
