@@ -291,10 +291,12 @@ input {
 }
 
 .settings-summary {
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  grid-column: 1 / -1;
+  justify-self: stretch;
   min-height: 48px;
   padding: 7px 18px;
   border: 3px solid var(--line);
@@ -327,11 +329,16 @@ details[open] > .settings-summary::after {
 }
 
 details[open].settings-drawer {
-  align-content: center;
+  align-content: start;
 }
 
 .settings-drawer:not([open]) {
-  min-height: 0;
+  min-height: 68px;
+  align-content: center;
+}
+
+.settings-drawer:not([open]) > :not(summary) {
+  display: none;
 }
 
 .language-select {

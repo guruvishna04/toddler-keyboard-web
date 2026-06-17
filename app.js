@@ -606,7 +606,6 @@ function rejectIncorrectLetter(expectedLetter) {
   setHelperMood("try");
   helperMessageBubble.textContent = `Tap ${expectedLetter.toLocaleUpperCase(activeLanguage)}`;
   pressVisual(expectedLetter);
-  playRetrySound();
   speakTapPrompt(expectedLetter);
   updateNextKeyHighlight();
   return false;
@@ -622,8 +621,10 @@ function checkCompletion(letterSpeech = Promise.resolve()) {
     helperMessage.textContent = `You typed ${formatVisibleWord(targetWord)}!`;
     setHelperMood("celebrating");
     celebrate();
-    playSuccessSound();
-    letterSpeech.then(() => waitForWordSpeech(targetWord)).then(advanceToNextWord);
+    letterSpeech.then(() => waitForWordSpeech(targetWord)).then(() => {
+      playSuccessSound();
+      advanceToNextWord();
+    });
     return;
   }
 
@@ -662,7 +663,6 @@ function handleLetter(letter) {
 
   renderTypedLetters();
   pressVisual(normalizedLetter);
-  playSoundClip("letter");
   const letterSpeech = speakLetter(rawLetter.toLocaleLowerCase(activeLanguage));
   checkCompletion(letterSpeech);
 }
@@ -778,7 +778,7 @@ function toggleSound() {
     window.setTimeout(() => {
       updateSoundToggle();
       if (soundIsReady()) {
-        playSoundClip("soundOn");
+        speakText("sound on", { interrupt: true, fallbackDelay: 700 });
       }
     }, 120);
     return;
@@ -789,7 +789,7 @@ function toggleSound() {
     soundEnabled = false;
   } else {
     soundEnabled = true;
-    playSoundClip("soundOn");
+    speakText("sound on", { interrupt: true, fallbackDelay: 700 });
   }
   updateSoundToggle();
 }
