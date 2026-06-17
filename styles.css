@@ -131,6 +131,7 @@ input {
 
 .given-row {
   background: var(--butter);
+  grid-template-rows: auto 1fr;
 }
 
 .type-row {
@@ -153,6 +154,22 @@ input {
   top: 12px;
   left: 12px;
   min-width: 74px;
+}
+
+.word-picture {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: clamp(58px, 7vw, 92px);
+  height: clamp(58px, 7vw, 92px);
+  display: grid;
+  place-items: center;
+  border: 3px solid var(--line);
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 6px 0 rgba(47, 48, 52, 0.13);
+  font-size: clamp(2rem, 4.2vw, 4rem);
+  line-height: 1;
 }
 
 .target-word {
@@ -415,6 +432,24 @@ input {
   fill: #43a047;
 }
 
+.computer-disco-light {
+  display: none;
+  stroke: var(--line);
+  stroke-width: 5;
+}
+
+.light-red {
+  fill: #e53935;
+}
+
+.light-blue {
+  fill: #1e88e5;
+}
+
+.light-yellow {
+  fill: #fdd835;
+}
+
 .computer-shadow {
   fill: rgba(47, 48, 52, 0.17);
 }
@@ -440,6 +475,19 @@ input {
 .computer-helper.celebrating .computer-smile {
   display: block;
   stroke: #178c50;
+}
+
+.computer-helper.celebrating .computer-screen {
+  animation: disco-screen 520ms linear infinite;
+}
+
+.computer-helper.celebrating .computer-body {
+  animation: disco-body 520ms linear infinite;
+}
+
+.computer-helper.celebrating .computer-disco-light {
+  display: block;
+  animation: disco-light 520ms ease-in-out infinite;
 }
 
 .computer-helper.try .computer-smile {
@@ -490,7 +538,7 @@ input {
 }
 
 .computer-helper.celebrating .computer-dancer {
-  animation: computer-dance 520ms ease-in-out 5;
+  animation: computer-dance 430ms ease-in-out 7;
 }
 
 .computer-helper.try .computer-dancer {
@@ -650,6 +698,51 @@ input {
   }
   75% {
     transform: translateX(5px);
+  }
+}
+
+@keyframes disco-screen {
+  0% {
+    fill: #fff8df;
+  }
+  25% {
+    fill: #b8f7ff;
+  }
+  50% {
+    fill: #ffe0f1;
+  }
+  75% {
+    fill: #d9ffd5;
+  }
+  100% {
+    fill: #fff8df;
+  }
+}
+
+@keyframes disco-body {
+  0% {
+    fill: #ff9b55;
+  }
+  33% {
+    fill: #ff7ea8;
+  }
+  66% {
+    fill: #8fd8ff;
+  }
+  100% {
+    fill: #ff9b55;
+  }
+}
+
+@keyframes disco-light {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
   }
 }
 

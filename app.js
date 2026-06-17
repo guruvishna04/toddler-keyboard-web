@@ -44,6 +44,96 @@ const soundClips = {
     { frequency: 392, endFrequency: 330, duration: 0.18, type: "triangle", volume: 0.035 },
   ],
 };
+const wordPictures = {
+  dada: "👨",
+  papa: "👨",
+  mama: "👩",
+  maman: "👩",
+  baby: "👶",
+  bebe: "👶",
+  cat: "🐱",
+  gato: "🐱",
+  chat: "🐱",
+  katze: "🐱",
+  dog: "🐶",
+  perro: "🐶",
+  chien: "🐶",
+  hund: "🐶",
+  apple: "🍎",
+  apfel: "🍎",
+  pomme: "🍎",
+  milk: "🥛",
+  leche: "🥛",
+  lait: "🥛",
+  milch: "🥛",
+  ball: "⚽",
+  bola: "⚽",
+  balle: "⚽",
+  teddy: "🧸",
+  car: "🚗",
+  auto: "🚗",
+  truck: "🚚",
+  camion: "🚚",
+  bus: "🚌",
+  train: "🚂",
+  tren: "🚂",
+  boat: "⛵",
+  barco: "⛵",
+  bateau: "⛵",
+  plane: "✈️",
+  avion: "✈️",
+  book: "📘",
+  libro: "📘",
+  livre: "📘",
+  buch: "📘",
+  star: "⭐",
+  moon: "🌙",
+  sun: "☀️",
+  house: "🏠",
+  home: "🏠",
+  casa: "🏠",
+  maison: "🏠",
+  haus: "🏠",
+  bed: "🛏️",
+  bath: "🛁",
+  cup: "🥤",
+  spoon: "🥄",
+  plate: "🍽️",
+  shoe: "👟",
+  sock: "🧦",
+  hat: "🧢",
+  hand: "✋",
+  foot: "🦶",
+  nose: "👃",
+  eye: "👁️",
+  ear: "👂",
+  smile: "😊",
+  laugh: "😄",
+  flower: "🌼",
+  cloud: "☁️",
+  rain: "🌧️",
+  snow: "❄️",
+  leaf: "🍃",
+  park: "🛝",
+  slide: "🛝",
+  swing: "🛝",
+  banana: "🍌",
+  orange: "🍊",
+  grape: "🍇",
+  melon: "🍈",
+  berry: "🫐",
+  carrot: "🥕",
+  water: "💧",
+  bread: "🍞",
+  rice: "🍚",
+  pasta: "🍝",
+  cookie: "🍪",
+  cake: "🍰",
+  cheese: "🧀",
+  yogurt: "🥣",
+  drum: "🥁",
+  bell: "🔔",
+};
 const wordBank = {
   "en-US": [
     "dada", "mama", "papa", "baby", "cat", "dog", "apple", "milk", "ball", "teddy",
@@ -110,6 +200,7 @@ let soundClipsLoaded = false;
 
 const targetWordDisplay = document.querySelector("#target-word");
 const wordInput = targetWordDisplay;
+const wordPicture = document.querySelector("#word-picture");
 const typedDisplay = document.querySelector("#typed-display");
 const helperComputer = document.querySelector("#helper-computer");
 const helperMessageBubble = document.querySelector("#helper-message-bubble");
@@ -162,9 +253,20 @@ function formatVisibleWord(word) {
   return capsLockOn ? word.toLocaleUpperCase(activeLanguage) : word.toLocaleLowerCase(activeLanguage);
 }
 
+function pictureForWord(word) {
+  return wordPictures[word.toLocaleLowerCase(activeLanguage)] || word[0]?.toLocaleUpperCase(activeLanguage) || "★";
+}
+
+function updateWordPicture() {
+  const picture = pictureForWord(targetWord);
+  wordPicture.textContent = picture;
+  wordPicture.setAttribute("aria-label", `Picture for ${formatVisibleWord(targetWord)}`);
+}
+
 function updateTargetWordDisplay() {
   targetWordDisplay.value = formatVisibleWord(targetWord);
   targetWordDisplay.setAttribute("aria-label", `Target word ${formatVisibleWord(targetWord)}`);
+  updateWordPicture();
 }
 
 function loadSpeechVoices() {
@@ -221,6 +323,14 @@ function speakText(text, options = {}) {
 function speakLetter(letter) {
   speakText(letter.toLocaleLowerCase(activeLanguage), {
     rate: smoothVoiceDefaults.letterRate,
+    pitch: smoothVoiceDefaults.pitch,
+    interrupt: true,
+  });
+}
+
+function speakTapPrompt(letter) {
+  return speakText(`tap ${letter.toLocaleLowerCase(activeLanguage)}`, {
+    rate: smoothVoiceDefaults.wordRate,
     pitch: smoothVoiceDefaults.pitch,
     interrupt: true,
   });
@@ -424,10 +534,10 @@ function expectedNextLetter() {
 function rejectIncorrectLetter(expectedLetter) {
   helperMessage.textContent = `Tap ${expectedLetter.toLocaleUpperCase(activeLanguage)}`;
   setHelperMood("try");
-  helperMessageBubble.textContent = `Try ${expectedLetter.toLocaleUpperCase(activeLanguage)}`;
+  helperMessageBubble.textContent = `Tap ${expectedLetter.toLocaleUpperCase(activeLanguage)}`;
   pressVisual(expectedLetter);
   playRetrySound();
-  speakLetter(expectedLetter);
+  speakTapPrompt(expectedLetter);
   updateNextKeyHighlight();
   return false;
 }
@@ -574,9 +684,9 @@ function celebrate() {
   wordStage.classList.add("complete");
 
   const colors = ["#e53935", "#fb8c00", "#1e88e5", "#43a047", "#fdd835", "#8e24aa"];
-  const symbols = ["★", "●", "◆", "▲", "✦"];
+  const symbols = ["★", "●", "◆", "▲", "✦", "■", "⬟"];
 
-  for (let index = 0; index < 36; index += 1) {
+  for (let index = 0; index < 64; index += 1) {
     const spark = document.createElement("span");
     spark.className = "spark";
     spark.textContent = symbols[index % symbols.length];

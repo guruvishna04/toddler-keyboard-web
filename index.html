@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="A toddler-friendly keyboard practice app for colorful typing.">
     <title>Little Typing Colors</title>
-    <link rel="stylesheet" href="styles.css?v=completion-flow">
+    <link rel="stylesheet" href="styles.css?v=word-picture-disco">
   </head>
   <body>
     <main class="app-shell" aria-labelledby="app-title">
       <section class="word-stage" aria-label="Typing practice">
         <div class="copy-card practice-strip">
           <div class="word-row given-row">
-            <span class="word-label">See</span>
+            <span class="word-label">See word</span>
+            <div id="word-picture" class="word-picture" role="img" aria-label="Picture for dada">👨</div>
             <h1 id="app-title" class="target-word">
               <input id="target-word" class="target-word-input" type="text" value="dada" maxlength="8" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Reference word">
             </h1>
@@ -82,6 +83,9 @@
             <rect class="computer-keyboard" x="96" y="214" width="188" height="30" rx="15"></rect>
             <circle class="computer-button" cx="286" cy="85" r="8"></circle>
             <circle class="computer-button" cx="286" cy="113" r="8"></circle>
+            <circle class="computer-disco-light light-red" cx="72" cy="42" r="11"></circle>
+            <circle class="computer-disco-light light-blue" cx="190" cy="18" r="13"></circle>
+            <circle class="computer-disco-light light-yellow" cx="308" cy="42" r="11"></circle>
           </g>
         </svg>
         <div class="helper-copy">
@@ -138,6 +142,6 @@
 
     <div id="celebration-layer" class="celebration-layer" aria-hidden="true"></div>
 
-    <script src="app.js?v=completion-flow"></script>
+    <script src="app.js?v=word-picture-disco"></script>
   </body>
 </html>
