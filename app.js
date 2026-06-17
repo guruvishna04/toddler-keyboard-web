@@ -1,6 +1,7 @@
 let targetWord = "dada";
 const defaultColor = "#e53935";
 const rainbowColors = ["#e53935", "#fb8c00", "#fdd835", "#43a047", "#1e88e5", "#8e24aa"];
+const sessionStorageKey = "littleTypingColors.session.v1";
 const smoothVoiceDefaults = {
   letterRate: 0.62,
   wordRate: 0.68,
@@ -231,6 +232,41 @@ function wordListForLanguage(language) {
 function listWordAt(index) {
   const words = wordListForLanguage(activeLanguage);
   return words[index % words.length];
+}
+
+function saveSession() {
+  try {
+    localStorage.setItem(sessionStorageKey, JSON.stringify({
+      activeLanguage,
+      practiceMode,
+      targetWord,
+      wordIndex,
+    }));
+  } catch {
+    // Storage can be unavailable in private or locked-down browser modes.
+  }
+}
+
+function loadSavedSession() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(sessionStorageKey) || "null");
+    if (!saved || !wordBank[saved.activeLanguage] || !saved.targetWord) {
+      return false;
+    }
+
+    activeLanguage = saved.activeLanguage;
+    languageSelect.value = activeLanguage;
+    wordIndex = Number.isInteger(saved.wordIndex) ? saved.wordIndex : 0;
+    setTargetWord(saved.targetWord, {
+      practiceMode: saved.practiceMode === "manual" ? "manual" : "list",
+      wordIndex,
+      skipSave: true,
+    });
+    saveSession();
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function wordSizeForLength(length) {
@@ -616,6 +652,9 @@ function setTargetWord(value, options = {}) {
   helperMessage.textContent = nextInstruction();
   setHelperMood("ready");
   updateNextKeyHighlight();
+  if (!options.skipSave) {
+    saveSession();
+  }
 }
 
 function setManualTargetWord(value) {
@@ -691,11 +730,11 @@ function celebrate() {
     spark.className = "spark";
     spark.textContent = symbols[index % symbols.length];
     spark.style.left = `${6 + Math.random() * 88}%`;
-    spark.style.top = `${52 + Math.random() * 36}%`;
+    spark.style.top = `${8 + Math.random() * 36}%`;
     spark.style.color = colors[index % colors.length];
     spark.style.animationDelay = `${Math.random() * 220}ms`;
     celebrationLayer.appendChild(spark);
-    setTimeout(() => spark.remove(), 1700);
+    setTimeout(() => spark.remove(), 3200);
   }
 }
 
@@ -911,5 +950,7 @@ preloadSoundClips();
 if ("speechSynthesis" in window) {
   window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
-setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
+if (!loadSavedSession()) {
+  setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
+}
 updateKeyCase();
