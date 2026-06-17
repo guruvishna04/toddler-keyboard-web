@@ -1,8 +1,6 @@
 let targetWord = "dada";
 const defaultColor = "#e53935";
 const rainbowColors = ["#e53935", "#fb8c00", "#fdd835", "#43a047", "#1e88e5", "#8e24aa"];
-const encouragingEmojis = ["🙂", "⭐", "🎉", "👏", "🌈"];
-const tryAgainEmojis = ["🤔", "🙂", "💪"];
 
 let typedLetters = [];
 let selectedColor = defaultColor;
@@ -13,7 +11,9 @@ let audioContext = null;
 
 const targetWordDisplay = document.querySelector("#target-word");
 const typedDisplay = document.querySelector("#typed-display");
-const emojiFeedback = document.querySelector("#emoji-feedback");
+const helperTruck = document.querySelector("#helper-truck");
+const helperMessageBubble = document.querySelector("#helper-message-bubble");
+const helpTypeButton = document.querySelector("#help-type-button");
 const helperMessage = document.querySelector("#helper-message");
 const progressDots = document.querySelector(".progress-dots");
 const wordInput = document.querySelector("#word-input");
@@ -147,16 +147,23 @@ function updateKeyCase() {
   capsToggle.setAttribute("aria-pressed", String(capsLockOn));
 }
 
-function updateEmojiFeedback(kind = "ready") {
+function setHelperMood(kind = "ready") {
+  helperTruck.classList.remove("ready", "good", "try", "helping");
+  helperTruck.classList.add(kind);
+
   if (kind === "good") {
-    emojiFeedback.textContent = encouragingEmojis[typedLetters.length % encouragingEmojis.length];
+    helperMessageBubble.textContent = "Nice letter!";
     return;
   }
   if (kind === "try") {
-    emojiFeedback.textContent = tryAgainEmojis[typedLetters.length % tryAgainEmojis.length];
+    helperMessageBubble.textContent = "Try again.";
     return;
   }
-  emojiFeedback.textContent = "🙂";
+  if (kind === "helping") {
+    helperMessageBubble.textContent = "I will type it.";
+    return;
+  }
+  helperMessageBubble.textContent = "I can help!";
 }
 
 function updatePresetSelection() {
@@ -178,7 +185,7 @@ function checkCompletion() {
 
   if (current === expected) {
     helperMessage.textContent = `You typed ${targetWord}!`;
-    updateEmojiFeedback("good");
+    setHelperMood("good");
     celebrate();
     playTone(660, 0.16);
     setTimeout(() => playTone(880, 0.18), 120);
@@ -187,10 +194,10 @@ function checkCompletion() {
 
   if (expected.startsWith(current)) {
     helperMessage.textContent = nextInstruction();
-    updateEmojiFeedback("good");
+    setHelperMood("good");
   } else {
     helperMessage.textContent = `Try ${targetWord.split("").join(" ")}`;
-    updateEmojiFeedback("try");
+    setHelperMood("try");
   }
 }
 
@@ -226,7 +233,7 @@ function setTargetWord(value) {
   renderTypedLetters();
   updatePresetSelection();
   helperMessage.textContent = nextInstruction();
-  updateEmojiFeedback("ready");
+  setHelperMood("ready");
   updateNextKeyHighlight();
 }
 
@@ -255,7 +262,7 @@ function clearTypedLetters() {
   typedLetters = [];
   renderTypedLetters();
   helperMessage.textContent = nextInstruction();
-  updateEmojiFeedback("ready");
+  setHelperMood("ready");
   updateNextKeyHighlight();
   playTone(300, 0.08);
 }
@@ -303,6 +310,24 @@ function toggleCapsLock() {
   playTone(capsLockOn ? 560 : 360, 0.08);
 }
 
+function animateHelperTyping() {
+  if (typedLetters.length >= targetWord.length) {
+    clearTypedLetters();
+  }
+
+  setHelperMood("helping");
+  let index = typedLetters.length;
+  const helperTimer = window.setInterval(() => {
+    if (index >= targetWord.length) {
+      window.clearInterval(helperTimer);
+      checkCompletion();
+      return;
+    }
+    handleLetter(targetWord[index].toLocaleLowerCase());
+    index += 1;
+  }, 420);
+}
+
 async function toggleFullscreen() {
   if (!document.fullscreenElement) {
     await document.documentElement.requestFullscreen();
@@ -348,6 +373,7 @@ keyButtons.forEach((button) => {
 clearButton.addEventListener("click", clearTypedLetters);
 backspaceButton.addEventListener("click", removeLastLetter);
 capsToggle.addEventListener("click", toggleCapsLock);
+helpTypeButton.addEventListener("click", animateHelperTyping);
 soundToggle.addEventListener("click", toggleSound);
 fullscreenButton.addEventListener("click", () => {
   toggleFullscreen().catch(() => {

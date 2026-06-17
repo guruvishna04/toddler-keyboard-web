@@ -31,7 +31,21 @@
           <div class="progress-dots" aria-hidden="true"></div>
         </div>
 
-        <div id="emoji-feedback" class="emoji-feedback" aria-live="polite" aria-label="Typing feedback">🙂</div>
+        <aside id="helper-truck" class="helper-truck ready" aria-label="Helper tow truck">
+          <svg class="truck-svg" viewBox="0 0 260 130" role="img" aria-label="Friendly tow truck helper">
+            <rect class="truck-bed" x="34" y="54" width="138" height="42" rx="14"></rect>
+            <rect class="truck-cab" x="126" y="30" width="68" height="66" rx="16"></rect>
+            <path class="truck-boom" d="M54 54 L24 22 L18 60" fill="none"></path>
+            <path class="truck-hook" d="M18 60 q10 8 0 16" fill="none"></path>
+            <circle class="truck-wheel" cx="72" cy="99" r="18"></circle>
+            <circle class="truck-wheel" cx="165" cy="99" r="18"></circle>
+            <circle class="truck-eye" cx="148" cy="55" r="6"></circle>
+            <circle class="truck-eye" cx="174" cy="55" r="6"></circle>
+            <path class="truck-mouth" d="M146 75 q17 14 34 0" fill="none"></path>
+          </svg>
+          <div id="helper-message-bubble" class="helper-message-bubble" aria-live="polite">I can help!</div>
+          <button id="help-type-button" class="help-type-button" type="button">Help type</button>
+        </aside>
         <p id="helper-message" class="helper-message" aria-live="polite">Pick a color. Press D and A.</p>
       </section>
 

@@ -14,7 +14,8 @@ A deployable static browser app for a 3-year-old practicing the word `dada`.
 - Preserves the target word's capital/small-case pattern while typing
 - Includes Caps mode for uppercase practice while still accepting lowercase/uppercase as correct
 - Includes rainbow color choices, plus a rainbow mode that changes color per letter
-- Shows simple emoji feedback while typing
+- Shows an original animated helper tow truck for encouragement and retry feedback
+- The helper truck can type the remaining letters when `Help type` is pressed
 - Has a `Full` button for fullscreen practice
 - Plays short generated tones with a sound on/off button
 - Celebrates when the typed word matches the selected practice word
