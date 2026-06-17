@@ -43,21 +43,22 @@ input {
 }
 
 .app-shell {
-  width: min(1160px, 100%);
+  width: min(1280px, 100%);
   height: 100dvh;
   margin: 0 auto;
   padding: clamp(8px, 1.25vw, 16px);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: minmax(230px, 1fr) auto minmax(214px, 0.92fr);
+  grid-template-columns: minmax(0, 0.5fr) minmax(0, 1.5fr);
+  grid-template-rows: minmax(250px, 1.12fr) minmax(104px, auto) minmax(230px, 0.92fr);
   grid-template-areas:
     "stage stage"
-    "words colors"
+    "controls controls"
     "helper keyboard";
-  gap: clamp(9px, 1.2vw, 14px);
+  gap: clamp(8px, 1vw, 12px);
 }
 
 .word-stage,
+.control-strip,
 .word-editor,
 .color-panel,
 .helper-truck,
@@ -146,7 +147,7 @@ input {
 .target-word {
   width: 100%;
   margin: 0;
-  font-size: clamp(4.4rem, 9.2vw, 8.8rem);
+  font-size: clamp(5rem, 10vw, 10rem);
   line-height: 0.9;
   letter-spacing: 0;
   overflow-wrap: anywhere;
@@ -167,14 +168,14 @@ input {
 .typed-display.empty::before {
   content: attr(data-placeholder);
   color: #777b82;
-  font-size: clamp(3.6rem, 7.2vw, 7rem);
+  font-size: clamp(4.2rem, 8.6vw, 8.4rem);
   font-weight: 900;
 }
 
 .typed-letter {
   display: inline-block;
   min-width: 0;
-  font-size: var(--typed-letter-size, clamp(4.2rem, 8vw, 8rem));
+  font-size: var(--typed-letter-size, clamp(4.6rem, 8.8vw, 8.8rem));
   font-weight: 900;
   line-height: 0.88;
   white-space: nowrap;
@@ -216,8 +217,7 @@ input {
   text-align: center;
 }
 
-.word-editor,
-.color-panel,
+.control-strip,
 .keyboard,
 .action-row,
 .helper-truck {
@@ -226,25 +226,38 @@ input {
   box-shadow: var(--soft-shadow);
 }
 
-.word-editor {
-  grid-area: words;
+.control-strip {
+  grid-area: controls;
   min-height: 0;
   padding: 10px;
   display: grid;
-  grid-template-rows: auto minmax(88px, 1fr) auto;
-  gap: 9px;
+  grid-template-columns: minmax(0, 1.75fr) minmax(310px, 0.8fr);
+  gap: 10px;
+  align-items: stretch;
   background: linear-gradient(145deg, #ffffff 0%, #f1fff7 100%);
 }
 
+.word-editor {
+  min-height: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(260px, 0.75fr);
+  gap: 10px;
+  align-items: center;
+  background: transparent;
+}
+
 .word-presets-scroll {
-  max-height: clamp(98px, 15vh, 132px);
+  min-width: 0;
+  max-height: none;
   padding: 3px;
-  overflow-y: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
   overscroll-behavior: contain;
 }
 
 .word-presets-scroll::-webkit-scrollbar {
-  width: 16px;
+  height: 14px;
 }
 
 .word-presets-scroll::-webkit-scrollbar-track {
@@ -260,13 +273,15 @@ input {
 }
 
 .word-presets {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(78px, 1fr));
+  display: flex;
   gap: 7px;
+  width: max-content;
+  min-width: 100%;
 }
 
 .preset-button {
-  min-height: 44px;
+  min-width: 92px;
+  min-height: 50px;
   border: 3px solid var(--line);
   border-radius: 16px;
   background: #ffffff;
@@ -284,7 +299,7 @@ input {
 
 .custom-word-row {
   display: grid;
-  grid-template-columns: auto minmax(110px, 1fr) auto;
+  grid-template-columns: auto minmax(120px, 1fr) auto;
   gap: 8px;
   align-items: center;
 }
@@ -328,32 +343,36 @@ input {
 }
 
 .color-panel {
-  grid-area: colors;
   min-height: 0;
-  padding: 10px;
+  padding: 0;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 10px;
-  background: #ffffff;
+  align-items: center;
+  background: transparent;
 }
 
 .color-tray {
-  min-height: 74px;
-  padding: 8px;
-  display: grid;
-  grid-template-columns: repeat(7, minmax(44px, 1fr));
+  min-height: 64px;
+  padding: 4px 2px;
+  display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
   border: 0;
   border-radius: 0;
   box-shadow: none;
   background: transparent;
+  overscroll-behavior: contain;
 }
 
 .color-button {
-  width: clamp(48px, 5.6vw, 64px);
-  height: clamp(48px, 5.6vw, 64px);
-  min-height: 48px;
+  width: clamp(42px, 4.6vw, 58px);
+  height: clamp(42px, 4.6vw, 58px);
+  min-width: 42px;
+  min-height: 42px;
   padding: 5px;
   border: 3px solid var(--line);
   border-radius: 999px;
@@ -366,7 +385,7 @@ input {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 34px;
+  min-height: 28px;
   border-radius: 999px;
 }
 
@@ -384,17 +403,19 @@ input {
 .helper-truck {
   grid-area: helper;
   min-height: 0;
-  padding: clamp(10px, 1.2vw, 14px);
+  padding: clamp(10px, 1.15vw, 14px);
   display: grid;
-  grid-template-columns: minmax(170px, 0.9fr) minmax(150px, 1fr);
-  gap: clamp(10px, 1.4vw, 16px);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(8px, 1vw, 12px);
   align-items: center;
+  justify-items: center;
   background: linear-gradient(145deg, #fffdf6 0%, #e9fff2 100%);
 }
 
 .truck-svg {
   width: 100%;
-  max-height: 198px;
+  max-width: 280px;
+  max-height: 150px;
   overflow: visible;
   transform-origin: 50% 80%;
 }
@@ -413,11 +434,11 @@ input {
 .truck-roof,
 .truck-cab,
 .truck-bed,
-.truck-side,
+.truck-hood,
 .truck-headlight,
 .truck-window,
 .truck-bumper,
-.truck-tooth {
+.truck-cheek {
   stroke: var(--line);
   stroke-width: 6;
 }
@@ -425,9 +446,12 @@ input {
 .truck-light,
 .truck-roof,
 .truck-cab,
-.truck-bed,
-.truck-side {
+.truck-bed {
   fill: #ff914d;
+}
+
+.truck-hood {
+  fill: #ffb15f;
 }
 
 .truck-window {
@@ -452,8 +476,9 @@ input {
   fill: #239b68;
 }
 
-.truck-tooth {
-  fill: #fff8df;
+.truck-cheek {
+  fill: #ffb7a8;
+  stroke-width: 4;
 }
 
 .truck-frown {
@@ -485,13 +510,14 @@ input {
 }
 
 .helper-copy {
+  width: 100%;
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .helper-message-bubble {
-  min-height: 74px;
-  padding: 10px 12px;
+  min-height: 56px;
+  padding: 8px 12px;
   display: grid;
   align-items: center;
   border: 3px solid var(--line);
@@ -502,7 +528,7 @@ input {
 }
 
 .help-type-button {
-  min-height: 58px;
+  min-height: 52px;
   padding: 0 16px;
   border: 3px solid var(--line);
   border-radius: 18px;
@@ -536,13 +562,13 @@ input {
   min-height: 0;
   padding: 10px;
   display: grid;
-  grid-template-columns: repeat(7, minmax(44px, 1fr));
+  grid-template-columns: repeat(9, minmax(44px, 1fr));
   gap: 7px;
   background: var(--rose);
 }
 
 .key-button {
-  min-height: clamp(48px, 6.3vh, 62px);
+  min-height: clamp(52px, 7vh, 68px);
   border: 3px solid var(--line);
   border-radius: 17px;
   background: #ffffff;
@@ -680,7 +706,7 @@ input {
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 760px) {
   html,
   body {
     height: auto;
@@ -694,8 +720,7 @@ input {
     grid-template-rows: auto;
     grid-template-areas:
       "stage"
-      "words"
-      "colors"
+      "controls"
       "helper"
       "keyboard";
   }
@@ -712,12 +737,34 @@ input {
     min-height: 190px;
   }
 
+  .control-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .word-editor {
+    grid-template-columns: 1fr;
+  }
+
+  .color-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .color-tray {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
   .helper-truck {
     grid-template-columns: minmax(160px, 0.8fr) 1fr;
+    grid-template-rows: auto;
   }
 
   .word-presets-scroll {
-    max-height: 190px;
+    max-height: none;
+  }
+
+  .keyboard {
+    grid-template-columns: repeat(6, minmax(58px, 1fr));
   }
 }
 
@@ -728,7 +775,7 @@ input {
   }
 
   .word-presets {
-    grid-template-columns: repeat(2, 1fr);
+    width: max-content;
   }
 
   .custom-word-row {
@@ -736,11 +783,12 @@ input {
   }
 
   .color-tray {
-    grid-template-columns: repeat(4, minmax(56px, 1fr));
+    justify-content: center;
   }
 
   .helper-truck {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     text-align: center;
   }
 

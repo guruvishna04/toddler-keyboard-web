@@ -33,7 +33,8 @@
         <p id="helper-message" class="helper-message" aria-live="polite">Pick a color. Press D and A.</p>
       </section>
 
-      <section class="word-editor" aria-label="Word controls">
+      <section class="control-strip" aria-label="Word and color controls">
+        <div class="word-editor" aria-label="Word controls">
           <div class="editor-title">Pick a word</div>
           <div class="word-presets-scroll">
             <div id="word-presets" class="word-presets" aria-label="Choose a word">
@@ -60,57 +61,59 @@
             <input id="word-input" class="word-input" type="text" value="dada" maxlength="8" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Practice word">
             <button id="use-word-button" class="use-word-button" type="button">Use</button>
           </div>
-      </section>
+        </div>
 
-      <section class="color-panel" aria-label="Color controls">
-        <div class="editor-title">Color</div>
-        <div class="color-tray" aria-label="Choose letter color">
-          <button class="color-button rainbow-button" type="button" data-color-mode="rainbow" aria-label="Choose rainbow">
-            <span></span>
-          </button>
-          <button class="color-button selected" type="button" data-color="#e53935" aria-label="Choose red">
-            <span style="background: #e53935"></span>
-          </button>
-          <button class="color-button" type="button" data-color="#fb8c00" aria-label="Choose orange">
-            <span style="background: #fb8c00"></span>
-          </button>
-          <button class="color-button" type="button" data-color="#1e88e5" aria-label="Choose blue">
-            <span style="background: #1e88e5"></span>
-          </button>
-          <button class="color-button" type="button" data-color="#43a047" aria-label="Choose green">
-            <span style="background: #43a047"></span>
-          </button>
-          <button class="color-button" type="button" data-color="#fdd835" aria-label="Choose yellow">
-            <span style="background: #fdd835"></span>
-          </button>
-          <button class="color-button" type="button" data-color="#8e24aa" aria-label="Choose purple">
-            <span style="background: #8e24aa"></span>
-          </button>
+        <div class="color-panel" aria-label="Color controls">
+          <div class="editor-title">Color</div>
+          <div class="color-tray" aria-label="Choose letter color">
+            <button class="color-button rainbow-button" type="button" data-color-mode="rainbow" aria-label="Choose rainbow">
+              <span></span>
+            </button>
+            <button class="color-button selected" type="button" data-color="#e53935" aria-label="Choose red">
+              <span style="background: #e53935"></span>
+            </button>
+            <button class="color-button" type="button" data-color="#fb8c00" aria-label="Choose orange">
+              <span style="background: #fb8c00"></span>
+            </button>
+            <button class="color-button" type="button" data-color="#1e88e5" aria-label="Choose blue">
+              <span style="background: #1e88e5"></span>
+            </button>
+            <button class="color-button" type="button" data-color="#43a047" aria-label="Choose green">
+              <span style="background: #43a047"></span>
+            </button>
+            <button class="color-button" type="button" data-color="#fdd835" aria-label="Choose yellow">
+              <span style="background: #fdd835"></span>
+            </button>
+            <button class="color-button" type="button" data-color="#8e24aa" aria-label="Choose purple">
+              <span style="background: #8e24aa"></span>
+            </button>
+          </div>
         </div>
       </section>
 
       <aside id="helper-truck" class="helper-truck ready" aria-label="Helper tow truck">
-        <svg class="truck-svg" viewBox="0 0 320 220" role="img" aria-label="Friendly tow truck helper">
-          <path class="truck-boom" d="M94 92 L50 42 L42 112" fill="none"></path>
-          <circle class="truck-light" cx="50" cy="42" r="15"></circle>
-          <path class="truck-hook" d="M42 112 q18 10 2 28" fill="none"></path>
-          <rect class="truck-roof" x="118" y="34" width="118" height="26" rx="13"></rect>
-          <rect class="truck-cab" x="88" y="54" width="166" height="92" rx="32"></rect>
-          <rect class="truck-window" x="114" y="68" width="112" height="46" rx="18"></rect>
-          <rect class="truck-bed" x="42" y="112" width="236" height="56" rx="26"></rect>
-          <rect class="truck-side" x="62" y="93" width="52" height="54" rx="18"></rect>
-          <circle class="truck-headlight" cx="76" cy="134" r="18"></circle>
-          <circle class="truck-headlight" cx="246" cy="134" r="18"></circle>
+        <svg class="truck-svg" viewBox="0 0 360 220" role="img" aria-label="Friendly tow truck helper">
+          <path class="truck-boom" d="M90 96 L54 48 L48 120" fill="none"></path>
+          <path class="truck-hook" d="M48 120 q18 12 0 30" fill="none"></path>
+          <circle class="truck-light" cx="54" cy="48" r="14"></circle>
+          <rect class="truck-bed" x="44" y="112" width="250" height="54" rx="25"></rect>
+          <rect class="truck-cab" x="118" y="48" width="158" height="104" rx="30"></rect>
+          <path class="truck-hood" d="M76 112 h62 q17 0 24 17 l10 25 H76z"></path>
+          <rect class="truck-window" x="138" y="66" width="104" height="46" rx="18"></rect>
+          <rect class="truck-roof" x="142" y="31" width="100" height="25" rx="13"></rect>
+          <circle class="truck-headlight" cx="96" cy="137" r="17"></circle>
+          <circle class="truck-headlight" cx="262" cy="137" r="17"></circle>
           <g class="truck-face">
-            <circle class="truck-eye" cx="148" cy="91" r="10"></circle>
-            <circle class="truck-eye" cx="192" cy="91" r="10"></circle>
-            <path class="truck-smile" d="M132 124 q38 30 76 0" fill="none"></path>
-            <path class="truck-frown" d="M134 140 q36 -24 72 0" fill="none"></path>
-            <path class="truck-tooth" d="M154 136 h36 v28 q-18 10 -36 0z"></path>
+            <circle class="truck-eye" cx="166" cy="90" r="8"></circle>
+            <circle class="truck-eye" cx="210" cy="90" r="8"></circle>
+            <path class="truck-smile" d="M154 123 q34 24 68 0" fill="none"></path>
+            <path class="truck-frown" d="M156 137 q32 -21 64 0" fill="none"></path>
+            <circle class="truck-cheek" cx="136" cy="122" r="7"></circle>
+            <circle class="truck-cheek" cx="240" cy="122" r="7"></circle>
           </g>
-          <rect class="truck-bumper" x="84" y="154" width="152" height="24" rx="12"></rect>
-          <circle class="truck-wheel" cx="90" cy="176" r="24"></circle>
-          <circle class="truck-wheel" cx="230" cy="176" r="24"></circle>
+          <rect class="truck-bumper" x="92" y="154" width="152" height="22" rx="12"></rect>
+          <circle class="truck-wheel" cx="98" cy="176" r="24"></circle>
+          <circle class="truck-wheel" cx="244" cy="176" r="24"></circle>
         </svg>
         <div class="helper-copy">
           <div id="helper-message-bubble" class="helper-message-bubble" aria-live="polite">I can help!</div>
