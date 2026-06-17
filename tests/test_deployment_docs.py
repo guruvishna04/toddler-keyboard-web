@@ -19,6 +19,13 @@ class DeploymentDocsTests(unittest.TestCase):
         self.assertIn("No build step", readme)
         self.assertNotIn("GitHub Pages Pipeline", readme)
 
+    def test_index_includes_vercel_web_analytics(self):
+        html = (APP_ROOT / "index.html").read_text(encoding="utf-8")
+
+        self.assertIn("window.va", html)
+        self.assertIn("window.vaq", html)
+        self.assertIn('/_vercel/insights/script.js', html)
+
 
 if __name__ == "__main__":
     unittest.main()
