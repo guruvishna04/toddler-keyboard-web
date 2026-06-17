@@ -180,22 +180,42 @@ function voiceForLanguage(language) {
     || null;
 }
 
-function speakText(text, options = {}) {
-  if (!soundEnabled || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
-    return;
-  }
+function estimatedSpeechDuration(text) {
+  return Math.min(2600, Math.max(900, text.length * 260 + 520));
+}
 
-  loadSpeechVoices();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = activeLanguage;
-  utterance.voice = voiceForLanguage(activeLanguage);
-  utterance.rate = options.rate ?? smoothVoiceDefaults.wordRate;
-  utterance.pitch = options.pitch ?? smoothVoiceDefaults.pitch;
-  utterance.volume = 1;
-  if (options.interrupt) {
-    window.speechSynthesis.cancel();
-  }
-  window.speechSynthesis.speak(utterance);
+function speakText(text, options = {}) {
+  return new Promise((resolve) => {
+    if (!soundEnabled || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+      window.setTimeout(resolve, options.fallbackDelay ?? estimatedSpeechDuration(text));
+      return;
+    }
+
+    loadSpeechVoices();
+    const utterance = new SpeechSynthesisUtterance(text);
+    let finished = false;
+    const fallbackTimer = window.setTimeout(finish, options.fallbackDelay ?? estimatedSpeechDuration(text));
+    function finish() {
+      if (finished) {
+        return;
+      }
+      finished = true;
+      window.clearTimeout(fallbackTimer);
+      resolve();
+    }
+
+    utterance.lang = activeLanguage;
+    utterance.voice = voiceForLanguage(activeLanguage);
+    utterance.rate = options.rate ?? smoothVoiceDefaults.wordRate;
+    utterance.pitch = options.pitch ?? smoothVoiceDefaults.pitch;
+    utterance.volume = 1;
+    utterance.onend = finish;
+    utterance.onerror = finish;
+    if (options.interrupt) {
+      window.speechSynthesis.cancel();
+    }
+    window.speechSynthesis.speak(utterance);
+  });
 }
 
 function speakLetter(letter) {
@@ -207,11 +227,17 @@ function speakLetter(letter) {
 }
 
 function speakWord(word) {
-  speakText(word.toLocaleLowerCase(activeLanguage), {
+  return speakText(word.toLocaleLowerCase(activeLanguage), {
     rate: smoothVoiceDefaults.wordRate,
     pitch: smoothVoiceDefaults.pitch,
     interrupt: true,
   });
+}
+
+function waitForWordSpeech(word) {
+  return speakWord(word).then(() => new Promise((resolve) => {
+    window.setTimeout(resolve, 360);
+  }));
 }
 
 function displayLetterForTarget(rawLetter, index) {
@@ -364,9 +390,13 @@ function updateKeyCase() {
 }
 
 function setHelperMood(kind = "ready") {
-  helperComputer.classList.remove("ready", "good", "try", "helping");
+  helperComputer.classList.remove("ready", "good", "try", "helping", "celebrating");
   helperComputer.classList.add(kind);
 
+  if (kind === "celebrating") {
+    helperMessageBubble.textContent = "You did it!";
+    return;
+  }
   if (kind === "good") {
     helperMessageBubble.textContent = "Nice letter!";
     return;
@@ -387,6 +417,21 @@ function nextInstruction() {
   return `Tap ${next.toLocaleUpperCase()}`;
 }
 
+function expectedNextLetter() {
+  return expectedWord()[typedLetters.length] || "";
+}
+
+function rejectIncorrectLetter(expectedLetter) {
+  helperMessage.textContent = `Tap ${expectedLetter.toLocaleUpperCase(activeLanguage)}`;
+  setHelperMood("try");
+  helperMessageBubble.textContent = `Try ${expectedLetter.toLocaleUpperCase(activeLanguage)}`;
+  pressVisual(expectedLetter);
+  playRetrySound();
+  speakLetter(expectedLetter);
+  updateNextKeyHighlight();
+  return false;
+}
+
 function checkCompletion() {
   const current = typedWord();
   const expected = expectedWord();
@@ -395,11 +440,10 @@ function checkCompletion() {
 
   if (current === expected) {
     helperMessage.textContent = `You typed ${formatVisibleWord(targetWord)}!`;
-    setHelperMood("good");
+    setHelperMood("celebrating");
     celebrate();
     playSuccessSound();
-    setTimeout(() => speakWord(targetWord), 260);
-    advanceToNextWord();
+    waitForWordSpeech(targetWord).then(advanceToNextWord);
     return;
   }
 
@@ -423,14 +467,21 @@ function handleLetter(letter) {
   }
 
   const rawLetter = capsLockOn ? letter.toLocaleUpperCase(activeLanguage) : letter.toLocaleLowerCase(activeLanguage);
+  const normalizedLetter = rawLetter.toLocaleLowerCase(activeLanguage);
+  const nextLetter = expectedNextLetter();
+  if (nextLetter && normalizedLetter !== nextLetter) {
+    rejectIncorrectLetter(nextLetter);
+    return;
+  }
+
   typedLetters.push({
-    letter: rawLetter.toLocaleLowerCase(activeLanguage),
+    letter: normalizedLetter,
     displayLetter: rawLetter,
     color: colorForLetter(typedLetters.length),
   });
 
   renderTypedLetters();
-  pressVisual(rawLetter.toLocaleLowerCase(activeLanguage));
+  pressVisual(normalizedLetter);
   playSoundClip("letter");
   speakLetter(rawLetter.toLocaleLowerCase(activeLanguage));
   checkCompletion();
@@ -467,7 +518,7 @@ function scheduleListAdvance() {
     wordIndex = (wordIndex + 1) % words.length;
     setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
     speakWord(targetWord);
-  }, 1500);
+  }, 520);
 }
 
 function returnToListAfterManualWord() {
@@ -522,19 +573,19 @@ function celebrate() {
   void wordStage.offsetWidth;
   wordStage.classList.add("complete");
 
-  const colors = ["#e53935", "#1e88e5", "#43a047", "#fdd835", "#8e24aa"];
-  const symbols = ["★", "●", "◆", "▲"];
+  const colors = ["#e53935", "#fb8c00", "#1e88e5", "#43a047", "#fdd835", "#8e24aa"];
+  const symbols = ["★", "●", "◆", "▲", "✦"];
 
-  for (let index = 0; index < 18; index += 1) {
+  for (let index = 0; index < 36; index += 1) {
     const spark = document.createElement("span");
     spark.className = "spark";
     spark.textContent = symbols[index % symbols.length];
-    spark.style.left = `${12 + Math.random() * 76}%`;
-    spark.style.top = `${60 + Math.random() * 28}%`;
+    spark.style.left = `${6 + Math.random() * 88}%`;
+    spark.style.top = `${52 + Math.random() * 36}%`;
     spark.style.color = colors[index % colors.length];
-    spark.style.animationDelay = `${Math.random() * 120}ms`;
+    spark.style.animationDelay = `${Math.random() * 220}ms`;
     celebrationLayer.appendChild(spark);
-    setTimeout(() => spark.remove(), 1100);
+    setTimeout(() => spark.remove(), 1700);
   }
 }
 
