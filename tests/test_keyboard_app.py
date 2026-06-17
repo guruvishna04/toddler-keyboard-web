@@ -161,10 +161,19 @@ class ToddlerKeyboardAppTests(unittest.TestCase):
         self.assertIn("cursor:", css)
         self.assertIn("height: 100dvh", css)
         self.assertIn("overflow: hidden", css)
+        self.assertIn("--app-gap", css)
+        self.assertIn("--key-height", css)
+        self.assertIn("--color-size", css)
+        self.assertIn("grid-template-rows: minmax(0, 0.9fr) minmax(0, 0.34fr) minmax(0, 1fr)", css)
+        self.assertIn("@media (max-height: 760px)", css)
+        self.assertIn("@media (max-height: 620px)", css)
+        self.assertIn("height: min(100dvh, 100svh)", css)
+        self.assertIn("max-height: 100dvh", css)
         self.assertIn(".key-button", css)
         self.assertIn(".typed-display", css)
         self.assertIn("@media", css)
-        self.assertRegex(css, re.compile(r"min-height:\s*(7[2-9]|[89][0-9])px"))
+        self.assertIn("min-height: var(--key-height)", css)
+        self.assertIn("min-height: calc(var(--action-height) + 18px)", css)
 
 
 if __name__ == "__main__":

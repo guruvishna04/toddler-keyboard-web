@@ -10,6 +10,18 @@
   --focus: #2aa7a1;
   --soft-shadow: 0 10px 0 rgba(47, 48, 52, 0.13);
   --big-pointer: pointer;
+  --app-pad: clamp(8px, 1.25vw, 16px);
+  --app-gap: clamp(8px, 1vw, 12px);
+  --card-pad: clamp(10px, 1.4vw, 16px);
+  --panel-pad: 10px;
+  --key-gap: 7px;
+  --key-height: clamp(52px, 7vh, 68px);
+  --action-height: 52px;
+  --color-size: clamp(64px, 6.2vw, 84px);
+  --target-size: clamp(5rem, 10vw, 10rem);
+  --typed-size: clamp(4.6rem, 8.8vw, 8.8rem);
+  --empty-size: clamp(4.2rem, 8.6vw, 8.4rem);
+  --helper-svg-height: clamp(118px, 21vh, 176px);
 }
 
 * {
@@ -44,17 +56,19 @@ input {
 
 .app-shell {
   width: min(1280px, 100%);
-  height: 100dvh;
+  height: min(100dvh, 100svh);
+  max-height: 100dvh;
   margin: 0 auto;
-  padding: clamp(8px, 1.25vw, 16px);
+  padding: var(--app-pad);
   display: grid;
   grid-template-columns: minmax(0, 0.5fr) minmax(0, 1.5fr);
-  grid-template-rows: minmax(220px, 0.86fr) minmax(112px, auto) minmax(250px, 1fr);
+  grid-template-rows: minmax(0, 0.9fr) minmax(0, 0.34fr) minmax(0, 1fr);
   grid-template-areas:
     "stage stage"
     "controls controls"
     "helper keyboard";
-  gap: clamp(8px, 1vw, 12px);
+  gap: var(--app-gap);
+  overflow: hidden;
 }
 
 .word-stage,
@@ -73,7 +87,7 @@ input {
 
 .copy-card {
   min-height: 0;
-  padding: clamp(10px, 1.4vw, 16px);
+  padding: var(--card-pad);
   border: 3px solid var(--line);
   border-radius: 28px;
   background:
@@ -144,7 +158,7 @@ input {
 .target-word {
   width: 100%;
   margin: 0;
-  font-size: clamp(5rem, 10vw, 10rem);
+  font-size: var(--target-size);
   line-height: 0.9;
   letter-spacing: 0;
   overflow-wrap: anywhere;
@@ -198,14 +212,14 @@ input {
 .typed-display.empty::before {
   content: attr(data-placeholder);
   color: #777b82;
-  font-size: clamp(4.2rem, 8.6vw, 8.4rem);
+  font-size: var(--empty-size);
   font-weight: 900;
 }
 
 .typed-letter {
   display: inline-block;
   min-width: 0;
-  font-size: var(--typed-letter-size, clamp(4.6rem, 8.8vw, 8.8rem));
+  font-size: var(--typed-letter-size, var(--typed-size));
   font-weight: 900;
   line-height: 0.88;
   white-space: nowrap;
@@ -246,7 +260,7 @@ input {
 .control-strip {
   grid-area: controls;
   min-height: 0;
-  padding: 10px;
+  padding: var(--panel-pad);
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
@@ -285,7 +299,7 @@ input {
 }
 
 .color-tray {
-  min-height: 78px;
+  min-height: calc(var(--color-size) + 12px);
   padding: 4px 2px;
   display: flex;
   gap: clamp(10px, 1.5vw, 18px);
@@ -301,10 +315,10 @@ input {
 }
 
 .color-button {
-  width: clamp(64px, 6.2vw, 84px);
-  height: clamp(64px, 6.2vw, 84px);
-  min-width: 64px;
-  min-height: 64px;
+  width: var(--color-size);
+  height: var(--color-size);
+  min-width: var(--color-size);
+  min-height: var(--color-size);
   padding: 5px;
   border: 3px solid var(--line);
   border-radius: 999px;
@@ -317,7 +331,7 @@ input {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 48px;
+  min-height: calc(var(--color-size) - 16px);
   border-radius: 999px;
 }
 
@@ -347,7 +361,7 @@ input {
 .monster-svg {
   width: 100%;
   max-width: 320px;
-  max-height: 176px;
+  max-height: var(--helper-svg-height);
   overflow: visible;
   transform-origin: 50% 80%;
 }
@@ -504,20 +518,20 @@ input {
   min-height: 0;
   display: grid;
   grid-template-rows: 1fr auto;
-  gap: clamp(8px, 1vw, 10px);
+  gap: var(--app-gap);
 }
 
 .keyboard {
   min-height: 0;
-  padding: 10px;
+  padding: var(--panel-pad);
   display: grid;
   grid-template-columns: repeat(9, minmax(44px, 1fr));
-  gap: 7px;
+  gap: var(--key-gap);
   background: var(--rose);
 }
 
 .key-button {
-  min-height: clamp(52px, 7vh, 68px);
+  min-height: var(--key-height);
   border: 3px solid var(--line);
   border-radius: 17px;
   background: #ffffff;
@@ -543,8 +557,8 @@ input {
 }
 
 .action-row {
-  min-height: 74px;
-  padding: 9px;
+  min-height: calc(var(--action-height) + 18px);
+  padding: calc(var(--panel-pad) - 1px);
   display: grid;
   grid-template-columns: minmax(118px, 1.1fr) repeat(5, 1fr);
   gap: 8px;
@@ -552,7 +566,7 @@ input {
 }
 
 .action-button {
-  min-height: 52px;
+  min-height: var(--action-height);
   border: 3px solid var(--line);
   border-radius: 17px;
   background: #ffffff;
@@ -658,6 +672,139 @@ input {
   to {
     transform: translateY(-170px) scale(1.35) rotate(20deg);
     opacity: 0;
+  }
+}
+
+@media (max-height: 760px) {
+  :root {
+    --app-pad: 8px;
+    --app-gap: 8px;
+    --card-pad: 8px;
+    --panel-pad: 8px;
+    --key-gap: 6px;
+    --key-height: clamp(44px, 6.3vh, 58px);
+    --action-height: 44px;
+    --color-size: clamp(52px, 7vh, 66px);
+    --target-size: clamp(4rem, 8.4vw, 8rem);
+    --typed-size: clamp(3.8rem, 7.6vw, 7.4rem);
+    --empty-size: clamp(3.4rem, 7vw, 6.8rem);
+    --helper-svg-height: clamp(92px, 17vh, 132px);
+  }
+
+  .app-shell {
+    grid-template-rows: minmax(0, 0.82fr) minmax(0, 0.25fr) minmax(0, 1fr);
+  }
+
+  .word-row {
+    padding: 42px 12px 10px;
+    border-radius: 22px;
+  }
+
+  .word-label,
+  .editor-title {
+    padding: 6px 14px;
+    font-size: clamp(0.9rem, 1.4vw, 1.12rem);
+  }
+
+  .word-label {
+    top: 10px;
+    left: 10px;
+    min-width: 66px;
+  }
+
+  .tap-prompt {
+    min-width: 104px;
+    margin: -22px 0 0;
+    padding: 6px 16px;
+    font-size: clamp(1rem, 1.65vw, 1.35rem);
+  }
+
+  .progress-dots {
+    min-height: 22px;
+    gap: 7px;
+  }
+
+  .progress-dots span {
+    width: 16px;
+    height: 16px;
+    border-width: 3px;
+  }
+
+  .helper-message-bubble {
+    min-height: 46px;
+    padding: 6px 10px;
+    border-radius: 16px;
+    font-size: clamp(0.98rem, 1.65vw, 1.25rem);
+  }
+
+  .help-type-button,
+  .language-select {
+    min-height: 42px;
+    font-size: clamp(0.92rem, 1.35vw, 1.08rem);
+  }
+
+  .action-row {
+    gap: 6px;
+  }
+
+  .action-button {
+    font-size: clamp(0.82rem, 1.25vw, 1.02rem);
+  }
+}
+
+@media (max-height: 620px) {
+  :root {
+    --app-pad: 6px;
+    --app-gap: 6px;
+    --card-pad: 6px;
+    --panel-pad: 6px;
+    --key-gap: 5px;
+    --key-height: clamp(36px, 5.8vh, 48px);
+    --action-height: 38px;
+    --color-size: clamp(42px, 6.8vh, 54px);
+    --target-size: clamp(3.3rem, 7vw, 6.8rem);
+    --typed-size: clamp(3rem, 6.2vw, 6rem);
+    --empty-size: clamp(2.8rem, 5.8vw, 5.4rem);
+    --helper-svg-height: clamp(76px, 14vh, 104px);
+  }
+
+  .app-shell {
+    grid-template-rows: minmax(0, 0.76fr) minmax(0, 0.2fr) minmax(0, 1fr);
+  }
+
+  .word-row {
+    padding: 36px 10px 8px;
+    border-radius: 18px;
+  }
+
+  .control-strip,
+  .keyboard,
+  .action-row,
+  .monster-truck {
+    border-radius: 18px;
+  }
+
+  .color-panel {
+    gap: 10px;
+  }
+
+  .color-tray {
+    min-height: calc(var(--color-size) + 8px);
+    gap: 8px;
+    padding: 2px;
+  }
+
+  .key-button {
+    border-radius: 13px;
+    font-size: clamp(1.15rem, 2.1vw, 1.7rem);
+  }
+
+  .action-row {
+    min-height: calc(var(--action-height) + 12px);
+  }
+
+  .monster-truck {
+    gap: 6px;
   }
 }
 
