@@ -198,6 +198,7 @@ let advanceTimer = null;
 let audioContext = null;
 let speechVoices = [];
 let soundClipsLoaded = false;
+let delayedSpeakTimer = null;
 
 const targetWordDisplay = document.querySelector("#target-word");
 const wordInput = targetWordDisplay;
@@ -329,18 +330,22 @@ function speakText(text, options = {}) {
       return;
     }
 
+    unlockSound();
     loadSpeechVoices();
     const utterance = new SpeechSynthesisUtterance(text);
     let finished = false;
-    const fallbackTimer = window.setTimeout(finish, options.fallbackDelay ?? estimatedSpeechDuration(text));
+    let fallbackTimer = null;
     function finish() {
       if (finished) {
         return;
       }
       finished = true;
-      window.clearTimeout(fallbackTimer);
+      if (fallbackTimer) {
+        window.clearTimeout(fallbackTimer);
+      }
       resolve();
     }
+    fallbackTimer = window.setTimeout(finish, options.fallbackDelay ?? estimatedSpeechDuration(text));
 
     utterance.lang = activeLanguage;
     utterance.voice = voiceForLanguage(activeLanguage);
@@ -350,14 +355,23 @@ function speakText(text, options = {}) {
     utterance.onend = finish;
     utterance.onerror = finish;
     if (options.interrupt) {
+      if (delayedSpeakTimer) {
+        window.clearTimeout(delayedSpeakTimer);
+        delayedSpeakTimer = null;
+      }
       window.speechSynthesis.cancel();
     }
-    window.speechSynthesis.speak(utterance);
+    const speakNow = () => {
+      delayedSpeakTimer = null;
+      window.speechSynthesis.resume();
+      window.speechSynthesis.speak(utterance);
+    };
+    delayedSpeakTimer = window.setTimeout(speakNow, options.interrupt ? 80 : 0);
   });
 }
 
 function speakLetter(letter) {
-  speakText(letter.toLocaleLowerCase(activeLanguage), {
+  return speakText(letter.toLocaleLowerCase(activeLanguage), {
     rate: smoothVoiceDefaults.letterRate,
     pitch: smoothVoiceDefaults.pitch,
     interrupt: true,
@@ -578,7 +592,7 @@ function rejectIncorrectLetter(expectedLetter) {
   return false;
 }
 
-function checkCompletion() {
+function checkCompletion(letterSpeech = Promise.resolve()) {
   const current = typedWord();
   const expected = expectedWord();
 
@@ -589,7 +603,7 @@ function checkCompletion() {
     setHelperMood("celebrating");
     celebrate();
     playSuccessSound();
-    waitForWordSpeech(targetWord).then(advanceToNextWord);
+    letterSpeech.then(() => waitForWordSpeech(targetWord)).then(advanceToNextWord);
     return;
   }
 
@@ -629,8 +643,8 @@ function handleLetter(letter) {
   renderTypedLetters();
   pressVisual(normalizedLetter);
   playSoundClip("letter");
-  speakLetter(rawLetter.toLocaleLowerCase(activeLanguage));
-  checkCompletion();
+  const letterSpeech = speakLetter(rawLetter.toLocaleLowerCase(activeLanguage));
+  checkCompletion(letterSpeech);
 }
 
 function setTargetWord(value, options = {}) {
