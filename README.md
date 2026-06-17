@@ -12,7 +12,9 @@ A deployable static browser app for a 3-year-old practicing the word `dada`.
 - Lets a parent or child choose basic letter colors before typing
 - Shows typed letters in a large display and scales longer words to stay readable
 - Preserves the target word's capital/small-case pattern while typing
+- Includes Caps mode for uppercase practice while still accepting lowercase/uppercase as correct
 - Includes rainbow color choices, plus a rainbow mode that changes color per letter
+- Shows simple emoji feedback while typing
 - Has a `Full` button for fullscreen practice
 - Plays short generated tones with a sound on/off button
 - Celebrates when the typed word matches the selected practice word

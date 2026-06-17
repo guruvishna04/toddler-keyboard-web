@@ -1,15 +1,19 @@
 let targetWord = "dada";
 const defaultColor = "#e53935";
 const rainbowColors = ["#e53935", "#fb8c00", "#fdd835", "#43a047", "#1e88e5", "#8e24aa"];
+const encouragingEmojis = ["🙂", "⭐", "🎉", "👏", "🌈"];
+const tryAgainEmojis = ["🤔", "🙂", "💪"];
 
 let typedLetters = [];
 let selectedColor = defaultColor;
 let colorMode = "single";
+let capsLockOn = false;
 let soundEnabled = true;
 let audioContext = null;
 
 const targetWordDisplay = document.querySelector("#target-word");
 const typedDisplay = document.querySelector("#typed-display");
+const emojiFeedback = document.querySelector("#emoji-feedback");
 const helperMessage = document.querySelector("#helper-message");
 const progressDots = document.querySelector(".progress-dots");
 const wordInput = document.querySelector("#word-input");
@@ -19,6 +23,7 @@ const colorButtons = Array.from(document.querySelectorAll(".color-button"));
 const keyButtons = Array.from(document.querySelectorAll(".key-button"));
 const clearButton = document.querySelector("#clear-button");
 const backspaceButton = document.querySelector("#backspace-button");
+const capsToggle = document.querySelector("#caps-toggle");
 const soundToggle = document.querySelector("#sound-toggle");
 const fullscreenButton = document.querySelector("#fullscreen-button");
 const celebrationLayer = document.querySelector("#celebration-layer");
@@ -34,9 +39,9 @@ function wordSizeForLength(length) {
     return "clamp(5rem, 13vw, 11rem)";
   }
   if (length <= 6) {
-    return "clamp(4rem, 9vw, 8rem)";
+    return "clamp(3.4rem, 7vw, 6rem)";
   }
-  return "clamp(3.1rem, 7vw, 6rem)";
+  return "clamp(2.8rem, 5.8vw, 5rem)";
 }
 
 function syncWordSize() {
@@ -46,10 +51,10 @@ function syncWordSize() {
 }
 
 function displayLetterForTarget(rawLetter, index) {
-  const targetLetter = targetWord[index] || rawLetter;
-  return targetLetter === targetLetter.toLocaleUpperCase()
-    ? rawLetter.toLocaleUpperCase()
-    : rawLetter.toLocaleLowerCase();
+  if (rawLetter === rawLetter.toLocaleUpperCase()) {
+    return rawLetter.toLocaleUpperCase();
+  }
+  return rawLetter.toLocaleLowerCase();
 }
 
 function getAudioContext() {
@@ -100,10 +105,10 @@ function renderTypedLetters() {
   typedDisplay.classList.toggle("empty", typedLetters.length === 0);
   typedDisplay.dataset.placeholder = `tap ${targetWord[0].toLocaleUpperCase()}`;
 
-  typedLetters.forEach(({ letter, color }, index) => {
+  typedLetters.forEach(({ letter, displayLetter, color }, index) => {
     const span = document.createElement("span");
     span.className = "typed-letter";
-    span.textContent = displayLetterForTarget(letter, index);
+    span.textContent = displayLetterForTarget(displayLetter || letter, index);
     span.style.color = color;
     typedDisplay.appendChild(span);
   });
@@ -134,6 +139,26 @@ function updateNextKeyHighlight() {
   });
 }
 
+function updateKeyCase() {
+  keyButtons.forEach((button) => {
+    const key = button.dataset.key || "";
+    button.textContent = capsLockOn ? key.toLocaleUpperCase() : key.toLocaleLowerCase();
+  });
+  capsToggle.setAttribute("aria-pressed", String(capsLockOn));
+}
+
+function updateEmojiFeedback(kind = "ready") {
+  if (kind === "good") {
+    emojiFeedback.textContent = encouragingEmojis[typedLetters.length % encouragingEmojis.length];
+    return;
+  }
+  if (kind === "try") {
+    emojiFeedback.textContent = tryAgainEmojis[typedLetters.length % tryAgainEmojis.length];
+    return;
+  }
+  emojiFeedback.textContent = "🙂";
+}
+
 function updatePresetSelection() {
   presetButtons.forEach((button) => {
     button.classList.toggle("selected", button.dataset.word === targetWord);
@@ -153,6 +178,7 @@ function checkCompletion() {
 
   if (current === expected) {
     helperMessage.textContent = `You typed ${targetWord}!`;
+    updateEmojiFeedback("good");
     celebrate();
     playTone(660, 0.16);
     setTimeout(() => playTone(880, 0.18), 120);
@@ -161,8 +187,10 @@ function checkCompletion() {
 
   if (expected.startsWith(current)) {
     helperMessage.textContent = nextInstruction();
+    updateEmojiFeedback("good");
   } else {
     helperMessage.textContent = `Try ${targetWord.split("").join(" ")}`;
+    updateEmojiFeedback("try");
   }
 }
 
@@ -175,9 +203,10 @@ function handleLetter(letter) {
     typedLetters = [];
   }
 
-  const rawLetter = letter.toLocaleLowerCase();
+  const rawLetter = capsLockOn ? letter.toLocaleUpperCase() : letter.toLocaleLowerCase();
   typedLetters.push({
-    letter: rawLetter,
+    letter: rawLetter.toLocaleLowerCase(),
+    displayLetter: rawLetter,
     color: colorForLetter(typedLetters.length),
   });
 
@@ -197,6 +226,7 @@ function setTargetWord(value) {
   renderTypedLetters();
   updatePresetSelection();
   helperMessage.textContent = nextInstruction();
+  updateEmojiFeedback("ready");
   updateNextKeyHighlight();
 }
 
@@ -225,6 +255,7 @@ function clearTypedLetters() {
   typedLetters = [];
   renderTypedLetters();
   helperMessage.textContent = nextInstruction();
+  updateEmojiFeedback("ready");
   updateNextKeyHighlight();
   playTone(300, 0.08);
 }
@@ -264,6 +295,12 @@ function toggleSound() {
   if (soundEnabled) {
     playTone(500, 0.08);
   }
+}
+
+function toggleCapsLock() {
+  capsLockOn = !capsLockOn;
+  updateKeyCase();
+  playTone(capsLockOn ? 560 : 360, 0.08);
 }
 
 async function toggleFullscreen() {
@@ -310,6 +347,7 @@ keyButtons.forEach((button) => {
 
 clearButton.addEventListener("click", clearTypedLetters);
 backspaceButton.addEventListener("click", removeLastLetter);
+capsToggle.addEventListener("click", toggleCapsLock);
 soundToggle.addEventListener("click", toggleSound);
 fullscreenButton.addEventListener("click", () => {
   toggleFullscreen().catch(() => {
@@ -337,9 +375,15 @@ window.addEventListener("keydown", (event) => {
     return;
   }
 
+  if (event.key === "CapsLock") {
+    toggleCapsLock();
+    return;
+  }
+
   if (/^[a-z]$/i.test(event.key)) {
-    handleLetter(event.key);
+    handleLetter(event.key.toLocaleLowerCase());
   }
 });
 
 setTargetWord(targetWord);
+updateKeyCase();

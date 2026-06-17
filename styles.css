@@ -9,7 +9,7 @@
   --line: #2b2b2b;
   --focus: #00a8a8;
   --shadow: 0 12px 0 rgba(43, 43, 43, 0.16);
-  --big-pointer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 42 42'%3E%3Cpath fill='%23ffffff' stroke='%232b2b2b' stroke-width='3' d='M7 4l25 18-12 2 7 12-6 3-7-12-8 9z'/%3E%3C/svg%3E") 7 4, pointer;
+  --big-pointer: pointer;
 }
 
 * {
@@ -34,13 +34,13 @@ body {
     linear-gradient(rgba(112, 214, 255, 0.22) 24px, transparent 1px),
     linear-gradient(135deg, #fff8dc 0%, #dff8ff 48%, #e6f8dc 100%);
   background-size: 48px 48px, 48px 48px, auto;
-  cursor: var(--big-pointer);
+  cursor: pointer;
 }
 
 button,
 input {
   font: inherit;
-  cursor: var(--big-pointer);
+  cursor: pointer;
 }
 
 .app-shell {
@@ -61,12 +61,13 @@ input {
   grid-area: stage;
   display: grid;
   gap: clamp(8px, 1.2vw, 12px);
-  align-content: start;
+  grid-template-rows: 1fr auto auto;
+  align-content: stretch;
 }
 
 .copy-card {
   min-height: 0;
-  height: calc(100dvh - 96px);
+  height: calc(100dvh - 116px);
   padding: clamp(12px, 2vw, 24px);
   border: 4px solid var(--line);
   border-radius: 28px;
@@ -132,7 +133,7 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(6px, 1vw, 14px);
+  gap: clamp(2px, 0.45vw, 8px);
   flex-wrap: nowrap;
   overflow: hidden;
 }
@@ -146,12 +147,24 @@ input {
 
 .typed-letter {
   display: inline-block;
-  min-width: 0.56em;
+  min-width: 0;
   font-size: var(--typed-letter-size, clamp(5rem, 12vw, 10rem));
   font-weight: 900;
   line-height: 0.82;
   animation: pop-in 180ms ease-out;
   white-space: nowrap;
+}
+
+.emoji-feedback {
+  min-height: 52px;
+  display: grid;
+  place-items: center;
+  border: 4px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 6px 0 rgba(43, 43, 43, 0.14);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
 }
 
 .progress-dots {
@@ -314,7 +327,7 @@ input {
 }
 
 .color-tray {
-  min-height: 82px;
+  min-height: 76px;
   padding: 10px;
   background: #ffffff;
   display: grid;
@@ -323,10 +336,13 @@ input {
 }
 
 .color-button {
+  width: 58px;
+  height: 58px;
   min-height: 58px;
   border: 4px solid var(--line);
-  border-radius: 18px;
+  border-radius: 999px;
   background: #ffffff;
+  justify-self: center;
   transition: transform 140ms ease, box-shadow 140ms ease;
 }
 
@@ -335,7 +351,7 @@ input {
   width: 100%;
   height: 100%;
   min-height: 42px;
-  border-radius: 12px;
+  border-radius: 999px;
 }
 
 .rainbow-button span {
@@ -400,7 +416,7 @@ input {
   padding: 10px;
   background: var(--mint);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
 }
 
@@ -416,6 +432,10 @@ input {
 
 .action-button.primary {
   background: var(--sun);
+}
+
+.caps-toggle[aria-pressed="true"] {
+  background: var(--sky);
 }
 
 .action-button:focus-visible {
