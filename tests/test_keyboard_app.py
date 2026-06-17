@@ -241,6 +241,14 @@ class ToddlerKeyboardAppTests(unittest.TestCase):
         self.assertIn("@media", css)
         self.assertIn("min-height: var(--key-height)", css)
         self.assertIn("min-height: calc(var(--action-height) + 18px)", css)
+        self.assertIn("@media (max-width: 760px)", css)
+        self.assertIn("max-height: none", css)
+        self.assertIn("overflow: visible", css)
+        self.assertIn("grid-template-columns: repeat(7, minmax(38px, 1fr))", css)
+        self.assertIn("--key-height: clamp(42px, 11vw, 54px)", css)
+        self.assertIn("grid-template-columns: repeat(3, minmax(0, 1fr))", css)
+        self.assertIn(".language-select", css)
+        self.assertNotIn("repeat(3, minmax(70px, 1fr))", css)
 
 
 if __name__ == "__main__":
