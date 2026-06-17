@@ -1,11 +1,10 @@
 let targetWord = "dada";
 const defaultColor = "#e53935";
 const rainbowColors = ["#e53935", "#fb8c00", "#fdd835", "#43a047", "#1e88e5", "#8e24aa"];
-const languageWordSets = {
-  "en-US": ["dada", "mama", "papa", "baby", "cat", "dog", "apple", "milk", "ball", "teddy", "happy", "truck"],
-  "es-ES": ["papa", "mama", "bebe", "gato", "perro", "casa", "sol", "luna", "auto", "leche", "bola", "mano"],
-  "fr-FR": ["papa", "mama", "bebe", "chat", "ami", "lune", "auto", "lait", "main", "balle", "joie", "dodo"],
-  "de-DE": ["papa", "mama", "baby", "katze", "hund", "auto", "milch", "ball", "hand", "haus", "sonne", "teddy"],
+const smoothVoiceDefaults = {
+  letterRate: 0.66,
+  wordRate: 0.72,
+  pitch: 1.05,
 };
 
 let typedLetters = [];
@@ -15,6 +14,7 @@ let capsLockOn = false;
 let soundEnabled = true;
 let activeLanguage = "en-US";
 let audioContext = null;
+let speechVoices = [];
 
 const targetWordDisplay = document.querySelector("#target-word");
 const wordInput = targetWordDisplay;
@@ -24,8 +24,6 @@ const helperMessageBubble = document.querySelector("#helper-message-bubble");
 const helpTypeButton = document.querySelector("#help-type-button");
 const helperMessage = document.querySelector("#tap-prompt");
 const progressDots = document.querySelector(".progress-dots");
-const presetContainer = document.querySelector("#word-presets");
-let presetButtons = Array.from(document.querySelectorAll(".preset-button"));
 const colorButtons = Array.from(document.querySelectorAll(".color-button"));
 const keyButtons = Array.from(document.querySelectorAll(".key-button"));
 const clearButton = document.querySelector("#clear-button");
@@ -58,6 +56,19 @@ function syncWordSize() {
   typedDisplay.style.setProperty("--typed-letter-size", size);
 }
 
+function loadSpeechVoices() {
+  if (!("speechSynthesis" in window)) {
+    return;
+  }
+  speechVoices = window.speechSynthesis.getVoices();
+}
+
+function voiceForLanguage(language) {
+  return speechVoices.find((voice) => voice.lang === language)
+    || speechVoices.find((voice) => voice.lang.toLocaleLowerCase().startsWith(language.slice(0, 2).toLocaleLowerCase()))
+    || null;
+}
+
 function speakText(text, options = {}) {
   if (!soundEnabled || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
     return;
@@ -65,19 +76,30 @@ function speakText(text, options = {}) {
 
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = activeLanguage;
-  utterance.rate = options.rate || 0.82;
-  utterance.pitch = options.pitch || 1.16;
+  utterance.voice = voiceForLanguage(activeLanguage);
+  utterance.rate = options.rate ?? smoothVoiceDefaults.wordRate;
+  utterance.pitch = options.pitch ?? smoothVoiceDefaults.pitch;
   utterance.volume = 1;
-  window.speechSynthesis.cancel();
+  if (options.interrupt) {
+    window.speechSynthesis.cancel();
+  }
   window.speechSynthesis.speak(utterance);
 }
 
 function speakLetter(letter) {
-  speakText(letter.toLocaleUpperCase(activeLanguage), { rate: 0.72, pitch: 1.28 });
+  speakText(letter.toLocaleUpperCase(activeLanguage), {
+    rate: smoothVoiceDefaults.letterRate,
+    pitch: 1.08,
+    interrupt: true,
+  });
 }
 
 function speakWord(word) {
-  speakText(word, { rate: 0.78, pitch: 1.12 });
+  speakText(word, {
+    rate: smoothVoiceDefaults.wordRate,
+    pitch: smoothVoiceDefaults.pitch,
+    interrupt: true,
+  });
 }
 
 function displayLetterForTarget(rawLetter, index) {
@@ -196,27 +218,6 @@ function setHelperMood(kind = "ready") {
   helperMessageBubble.textContent = "I can help!";
 }
 
-function updatePresetSelection() {
-  presetButtons.forEach((button) => {
-    button.classList.toggle("selected", button.dataset.word === targetWord);
-  });
-}
-
-function renderPresetWords() {
-  presetContainer.innerHTML = "";
-  (languageWordSets[activeLanguage] || languageWordSets["en-US"]).forEach((word) => {
-    const button = document.createElement("button");
-    button.className = "preset-button";
-    button.type = "button";
-    button.dataset.word = word;
-    button.textContent = word;
-    button.addEventListener("click", () => setTargetWord(button.dataset.word));
-    presetContainer.appendChild(button);
-  });
-  presetButtons = Array.from(presetContainer.querySelectorAll(".preset-button"));
-  updatePresetSelection();
-}
-
 function nextInstruction() {
   const next = targetWord[typedLetters.length] || targetWord[0];
   return `Tap ${next.toLocaleUpperCase()}`;
@@ -277,7 +278,6 @@ function setTargetWord(value) {
   typedLetters = [];
   syncWordSize();
   renderTypedLetters();
-  updatePresetSelection();
   helperMessage.textContent = nextInstruction();
   setHelperMood("ready");
   updateNextKeyHighlight();
@@ -343,7 +343,7 @@ function toggleSound() {
   soundToggle.setAttribute("aria-pressed", String(soundEnabled));
   if (soundEnabled) {
     playTone(500, 0.08);
-    speakText("Sound on");
+    speakText("Sound on", { interrupt: true });
   }
 }
 
@@ -384,8 +384,6 @@ async function toggleFullscreen() {
 
 function setLanguage(language) {
   activeLanguage = language;
-  renderPresetWords();
-  setTargetWord((languageWordSets[activeLanguage] || languageWordSets["en-US"])[0]);
   speakWord(targetWord);
 }
 
@@ -457,6 +455,9 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-renderPresetWords();
+loadSpeechVoices();
+if ("speechSynthesis" in window) {
+  window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
+}
 setTargetWord(targetWord);
 updateKeyCase();

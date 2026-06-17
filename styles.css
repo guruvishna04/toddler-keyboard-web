@@ -59,9 +59,8 @@ input {
 
 .word-stage,
 .control-strip,
-.word-editor,
 .color-panel,
-.helper-truck,
+.monster-truck,
 .keyboard-area {
   min-width: 0;
 }
@@ -238,7 +237,7 @@ input {
 .control-strip,
 .keyboard,
 .action-row,
-.helper-truck {
+.monster-truck {
   border: 3px solid var(--line);
   border-radius: 24px;
   box-shadow: var(--soft-shadow);
@@ -249,20 +248,9 @@ input {
   min-height: 0;
   padding: 10px;
   display: grid;
-  grid-template-columns: minmax(0, 1.42fr) minmax(360px, 0.95fr);
-  gap: 10px;
-  align-items: stretch;
-  background: linear-gradient(145deg, #ffffff 0%, #f1fff7 100%);
-}
-
-.word-editor {
-  min-height: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: minmax(122px, 0.18fr) minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: 1fr;
   align-items: center;
-  background: transparent;
+  background: linear-gradient(145deg, #ffffff 0%, #f1fff7 100%);
 }
 
 .language-select {
@@ -274,56 +262,6 @@ input {
   color: var(--ink);
   font-size: clamp(1rem, 1.45vw, 1.25rem);
   font-weight: 900;
-}
-
-.word-presets-scroll {
-  min-width: 0;
-  max-height: none;
-  padding: 3px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  overscroll-behavior: contain;
-}
-
-.word-presets-scroll::-webkit-scrollbar {
-  height: 14px;
-}
-
-.word-presets-scroll::-webkit-scrollbar-track {
-  border: 3px solid var(--line);
-  border-radius: 999px;
-  background: #ffffff;
-}
-
-.word-presets-scroll::-webkit-scrollbar-thumb {
-  border: 3px solid var(--line);
-  border-radius: 999px;
-  background: var(--sky);
-}
-
-.word-presets {
-  display: flex;
-  gap: 7px;
-  width: max-content;
-  min-width: 100%;
-}
-
-.preset-button {
-  min-width: 92px;
-  min-height: 50px;
-  border: 3px solid var(--line);
-  border-radius: 16px;
-  background: #ffffff;
-  color: var(--ink);
-  font-size: clamp(1rem, 1.45vw, 1.35rem);
-  font-weight: 900;
-}
-
-.preset-button.selected,
-.preset-button:focus-visible {
-  outline: 5px solid var(--focus);
-  outline-offset: 2px;
-  background: var(--butter);
 }
 
 .language-select:focus-visible,
@@ -340,18 +278,19 @@ input {
   padding: 0;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 10px;
+  gap: clamp(12px, 2vw, 22px);
   align-items: center;
+  justify-content: center;
   background: transparent;
 }
 
 .color-tray {
-  min-height: 64px;
+  min-height: 78px;
   padding: 4px 2px;
   display: flex;
-  gap: 8px;
+  gap: clamp(10px, 1.5vw, 18px);
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   overflow-x: auto;
   overflow-y: hidden;
   border: 0;
@@ -362,10 +301,10 @@ input {
 }
 
 .color-button {
-  width: clamp(54px, 5.3vw, 72px);
-  height: clamp(54px, 5.3vw, 72px);
-  min-width: 54px;
-  min-height: 54px;
+  width: clamp(64px, 6.2vw, 84px);
+  height: clamp(64px, 6.2vw, 84px);
+  min-width: 64px;
+  min-height: 64px;
   padding: 5px;
   border: 3px solid var(--line);
   border-radius: 999px;
@@ -378,7 +317,7 @@ input {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 38px;
+  min-height: 48px;
   border-radius: 999px;
 }
 
@@ -393,7 +332,7 @@ input {
   transform: translateY(-2px);
 }
 
-.helper-truck {
+.monster-truck {
   grid-area: helper;
   min-height: 0;
   padding: clamp(10px, 1.15vw, 14px);
@@ -405,127 +344,116 @@ input {
   background: linear-gradient(145deg, #fffdf6 0%, #e9fff2 100%);
 }
 
-.truck-svg {
+.monster-svg {
   width: 100%;
-  max-width: 300px;
-  max-height: 168px;
+  max-width: 320px;
+  max-height: 176px;
   overflow: visible;
   transform-origin: 50% 80%;
 }
 
-.truck-tilt {
-  transform: rotate(-2deg);
+.monster-dancer {
   transform-origin: 50% 70%;
+  animation: monster-idle 1500ms ease-in-out infinite;
 }
 
-.truck-boom,
-.truck-hook,
-.truck-smile,
-.truck-frown {
+.monster-suspension,
+.monster-smile,
+.monster-frown {
   stroke: var(--line);
   stroke-width: 8;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.truck-light,
-.truck-roof,
-.truck-cab,
-.truck-bed,
-.truck-door,
-.truck-hood,
-.truck-headlight,
-.truck-window,
-.truck-bumper,
-.truck-cheek,
-.truck-mouth {
+.monster-body,
+.monster-hood,
+.monster-cab,
+.monster-window,
+.monster-roof,
+.monster-light,
+.monster-bumper,
+.monster-cheek,
+.monster-mouth {
   stroke: var(--line);
   stroke-width: 6;
 }
 
-.truck-light,
-.truck-roof,
-.truck-cab,
-.truck-door,
-.truck-bed {
-  fill: #ff914d;
+.monster-body,
+.monster-cab,
+.monster-roof {
+  fill: #ff8e45;
 }
 
-.truck-bed {
-  fill: #4d9ea0;
+.monster-hood {
+  fill: #4da3a5;
 }
 
-.truck-hood {
-  fill: #c77742;
-}
-
-.truck-window {
+.monster-window {
   fill: #fff8df;
 }
 
-.truck-headlight {
+.monster-light {
   fill: #fff6d7;
 }
 
-.truck-bumper {
+.monster-bumper {
   fill: #9cc9d9;
 }
 
-.truck-shadow {
-  stroke: rgba(47, 48, 52, 0.2);
-  stroke-width: 14;
-  stroke-linecap: round;
+.monster-shadow {
+  fill: rgba(47, 48, 52, 0.17);
 }
 
-.truck-wheel {
+.monster-wheel {
   fill: #25262a;
   stroke: #ffffff;
-  stroke-width: 7;
+  stroke-width: 8;
 }
 
-.truck-wheel-core {
+.monster-rim {
   fill: #8a4f34;
   stroke: #ffffff;
-  stroke-width: 5;
+  stroke-width: 6;
 }
 
-.truck-eye {
+.monster-eye {
   fill: #239b68;
 }
 
-.truck-mouth {
+.monster-mouth {
   fill: #25262a;
 }
 
-.truck-cheek {
+.monster-cheek {
   fill: #ffb7a8;
   stroke-width: 4;
 }
 
-.truck-frown {
+.monster-frown {
   display: none;
 }
 
-.helper-truck.good .truck-smile,
-.helper-truck.ready .truck-smile,
-.helper-truck.helping .truck-smile {
+.monster-truck.good .monster-smile,
+.monster-truck.ready .monster-smile,
+.monster-truck.helping .monster-smile {
   display: block;
 }
 
-.helper-truck.good .truck-smile {
+.monster-truck.good .monster-smile {
   stroke: #178c50;
 }
 
-.helper-truck.try .truck-smile {
+.monster-truck.try .monster-smile {
   display: none;
 }
 
-.helper-truck.try .truck-frown {
+.monster-truck.try .monster-frown {
   display: block;
   stroke: #d84335;
 }
 
-.helper-truck.try .truck-eye {
+.monster-truck.try .monster-eye {
   transform: scaleY(0.62);
   transform-origin: center;
 }
@@ -559,16 +487,16 @@ input {
   font-weight: 900;
 }
 
-.helper-truck.good .truck-svg {
-  animation: truck-bounce 420ms ease;
+.monster-truck.good .monster-dancer {
+  animation: monster-dance 760ms ease-in-out 2;
 }
 
-.helper-truck.try .truck-svg {
-  animation: truck-wiggle 420ms ease;
+.monster-truck.try .monster-dancer {
+  animation: monster-wiggle 420ms ease;
 }
 
-.helper-truck.helping .truck-svg {
-  animation: truck-drive 600ms ease-in-out infinite;
+.monster-truck.helping .monster-dancer {
+  animation: monster-dance 620ms ease-in-out infinite;
 }
 
 .keyboard-area {
@@ -618,7 +546,7 @@ input {
   min-height: 74px;
   padding: 9px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: minmax(118px, 1.1fr) repeat(5, 1fr);
   gap: 8px;
   background: var(--mint);
 }
@@ -683,17 +611,33 @@ input {
   }
 }
 
-@keyframes truck-bounce {
+@keyframes monster-idle {
   0%,
   100% {
     transform: translateY(0) rotate(0);
   }
-  45% {
-    transform: translateY(-8px) rotate(-2deg);
+  50% {
+    transform: translateY(-5px) rotate(-1deg);
   }
 }
 
-@keyframes truck-wiggle {
+@keyframes monster-dance {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0) scale(1);
+  }
+  25% {
+    transform: translateY(-12px) rotate(-4deg) scale(1.03);
+  }
+  50% {
+    transform: translateY(3px) rotate(3deg) scale(0.99);
+  }
+  75% {
+    transform: translateY(-8px) rotate(4deg) scale(1.02);
+  }
+}
+
+@keyframes monster-wiggle {
   0%,
   100% {
     transform: translateX(0);
@@ -703,16 +647,6 @@ input {
   }
   75% {
     transform: translateX(5px);
-  }
-}
-
-@keyframes truck-drive {
-  0%,
-  100% {
-    transform: translateX(0) rotate(0);
-  }
-  50% {
-    transform: translateX(9px) rotate(1deg);
   }
 }
 
@@ -762,10 +696,6 @@ input {
     grid-template-columns: 1fr;
   }
 
-  .word-editor {
-    grid-template-columns: 1fr;
-  }
-
   .color-panel {
     grid-template-columns: 1fr;
   }
@@ -775,13 +705,9 @@ input {
     flex-wrap: wrap;
   }
 
-  .helper-truck {
+  .monster-truck {
     grid-template-columns: minmax(160px, 0.8fr) 1fr;
     grid-template-rows: auto;
-  }
-
-  .word-presets-scroll {
-    max-height: none;
   }
 
   .keyboard {
@@ -795,25 +721,17 @@ input {
     gap: 11px;
   }
 
-  .word-presets {
-    width: max-content;
-  }
-
-  .custom-word-row {
-    grid-template-columns: 1fr;
-  }
-
   .color-tray {
     justify-content: center;
   }
 
-  .helper-truck {
+  .monster-truck {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
     text-align: center;
   }
 
-  .truck-svg {
+  .monster-svg {
     max-height: 170px;
   }
 

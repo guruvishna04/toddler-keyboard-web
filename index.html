@@ -33,36 +33,7 @@
         </div>
       </section>
 
-      <section class="control-strip" aria-label="Word and color controls">
-        <div class="word-editor" aria-label="Word controls">
-          <select id="language-select" class="language-select" aria-label="Choose language">
-            <option value="en-US">English</option>
-            <option value="es-ES">Spanish</option>
-            <option value="fr-FR">French</option>
-            <option value="de-DE">German</option>
-          </select>
-          <div class="word-presets-scroll">
-            <div id="word-presets" class="word-presets" aria-label="Choose a word">
-              <button class="preset-button selected" type="button" data-word="dada">dada</button>
-              <button class="preset-button" type="button" data-word="Dada">Dada</button>
-              <button class="preset-button" type="button" data-word="DADA">DADA</button>
-              <button class="preset-button" type="button" data-word="mama">mama</button>
-              <button class="preset-button" type="button" data-word="papa">papa</button>
-              <button class="preset-button" type="button" data-word="Baby">Baby</button>
-              <button class="preset-button" type="button" data-word="cat">cat</button>
-              <button class="preset-button" type="button" data-word="Dog">Dog</button>
-              <button class="preset-button" type="button" data-word="cashew">cashew</button>
-              <button class="preset-button" type="button" data-word="banana">banana</button>
-              <button class="preset-button" type="button" data-word="cookie">cookie</button>
-              <button class="preset-button" type="button" data-word="apple">apple</button>
-              <button class="preset-button" type="button" data-word="milk">milk</button>
-              <button class="preset-button" type="button" data-word="ball">ball</button>
-              <button class="preset-button" type="button" data-word="teddy">teddy</button>
-              <button class="preset-button" type="button" data-word="happy">happy</button>
-            </div>
-          </div>
-        </div>
-
+      <section class="control-strip" aria-label="Color controls">
         <div class="color-panel" aria-label="Color controls">
           <div class="editor-title">Color</div>
           <div class="color-tray" aria-label="Choose letter color">
@@ -91,34 +62,32 @@
         </div>
       </section>
 
-      <aside id="helper-truck" class="helper-truck ready" aria-label="Helper tow truck">
-        <svg class="truck-svg" viewBox="0 0 380 240" role="img" aria-label="Friendly tow truck helper">
-          <g class="truck-tilt">
-            <path class="truck-boom" d="M112 98 L72 48 L60 126" fill="none"></path>
-            <path class="truck-hook" d="M60 126 q22 12 2 34" fill="none"></path>
-            <circle class="truck-light" cx="72" cy="48" r="15"></circle>
-            <path class="truck-shadow" d="M58 190 q118 34 250 0" fill="none"></path>
-            <path class="truck-bed" d="M62 126 h198 q34 0 48 28 l8 16 H78 q-20 0 -26 -18z"></path>
-            <path class="truck-door" d="M132 72 h118 q32 0 43 31 l19 61 H116 l-10 -54 q-7 -38 26 -38z"></path>
-            <path class="truck-hood" d="M78 126 h72 q18 0 29 18 l15 26 H72 q-18 0 -22 -15z"></path>
-            <path class="truck-window" d="M146 86 h92 q20 0 28 20 l8 30 H132 l-6 -27 q-5 -23 20 -23z"></path>
-            <path class="truck-roof" d="M150 52 h94 q17 0 24 18 l4 12 H132 l3 -12 q5 -18 15 -18z"></path>
-            <circle class="truck-headlight" cx="96" cy="151" r="18"></circle>
-            <circle class="truck-headlight" cx="288" cy="151" r="18"></circle>
-            <g class="truck-face">
-              <circle class="truck-eye" cx="174" cy="111" r="8"></circle>
-              <circle class="truck-eye" cx="218" cy="111" r="8"></circle>
-              <path class="truck-smile" d="M162 140 q36 30 76 1" fill="none"></path>
-              <path class="truck-frown" d="M164 151 q34 -23 70 0" fill="none"></path>
-              <path class="truck-mouth" d="M181 147 q18 12 36 0 q-7 24 -31 21 q-9 -2 -5 -21z"></path>
-              <circle class="truck-cheek" cx="144" cy="137" r="7"></circle>
-              <circle class="truck-cheek" cx="250" cy="137" r="7"></circle>
+      <aside id="helper-truck" class="monster-truck ready" aria-label="Dancing monster truck helper">
+        <svg class="monster-svg" viewBox="0 0 380 260" role="img" aria-label="Happy dancing monster truck helper">
+          <g class="monster-dancer">
+            <ellipse class="monster-shadow" cx="192" cy="224" rx="128" ry="16"></ellipse>
+            <circle class="monster-wheel" cx="112" cy="198" r="43"></circle>
+            <circle class="monster-wheel" cx="274" cy="198" r="43"></circle>
+            <circle class="monster-rim" cx="112" cy="198" r="19"></circle>
+            <circle class="monster-rim" cx="274" cy="198" r="19"></circle>
+            <path class="monster-suspension" d="M126 177 L170 142 L224 177 M254 177 L218 142 L168 177" fill="none"></path>
+            <path class="monster-body" d="M70 130 q34 -54 104 -58 h76 q54 0 78 54 l13 48 H72z"></path>
+            <path class="monster-hood" d="M70 130 h84 q28 0 44 26 l12 18 H70z"></path>
+            <path class="monster-cab" d="M156 74 h104 q36 0 50 40 l18 60 H132 l-8 -58 q-6 -42 32 -42z"></path>
+            <path class="monster-window" d="M172 92 h76 q24 0 34 26 l8 30 H150 l-5 -31 q-4 -25 27 -25z"></path>
+            <path class="monster-roof" d="M170 51 h82 q22 0 30 22 l4 12 H150 l4 -14 q6 -20 16 -20z"></path>
+            <circle class="monster-light" cx="98" cy="153" r="18"></circle>
+            <circle class="monster-light" cx="304" cy="153" r="18"></circle>
+            <rect class="monster-bumper" x="104" y="169" width="176" height="24" rx="12"></rect>
+            <g class="monster-face">
+              <circle class="monster-eye" cx="188" cy="119" r="9"></circle>
+              <circle class="monster-eye" cx="236" cy="119" r="9"></circle>
+              <path class="monster-smile" d="M176 148 q38 32 82 0" fill="none"></path>
+              <path class="monster-frown" d="M178 162 q38 -24 78 0" fill="none"></path>
+              <path class="monster-mouth" d="M197 154 q18 16 38 0 q-6 30 -29 28 q-15 -2 -9 -28z"></path>
+              <circle class="monster-cheek" cx="160" cy="145" r="7"></circle>
+              <circle class="monster-cheek" cx="270" cy="145" r="7"></circle>
             </g>
-            <rect class="truck-bumper" x="94" y="170" width="172" height="22" rx="12"></rect>
-            <circle class="truck-wheel" cx="100" cy="190" r="25"></circle>
-            <circle class="truck-wheel" cx="262" cy="190" r="25"></circle>
-            <circle class="truck-wheel-core" cx="100" cy="190" r="10"></circle>
-            <circle class="truck-wheel-core" cx="262" cy="190" r="10"></circle>
           </g>
         </svg>
         <div class="helper-copy">
@@ -158,6 +127,12 @@
         </div>
 
         <div class="action-row">
+          <select id="language-select" class="language-select" aria-label="Choose language">
+            <option value="en-US">English</option>
+            <option value="es-ES">Spanish</option>
+            <option value="fr-FR">French</option>
+            <option value="de-DE">German</option>
+          </select>
           <button id="caps-toggle" class="action-button caps-toggle" type="button" aria-label="Caps Lock" aria-pressed="false">Caps</button>
           <button id="backspace-button" class="action-button" type="button" aria-label="Backspace">Back</button>
           <button id="clear-button" class="action-button primary" type="button" aria-label="Clear typed letters">Clear</button>
