@@ -74,7 +74,7 @@ input {
 .word-stage,
 .control-strip,
 .color-panel,
-.monster-truck,
+.computer-helper,
 .keyboard-area {
   min-width: 0;
 }
@@ -251,7 +251,7 @@ input {
 .control-strip,
 .keyboard,
 .action-row,
-.monster-truck {
+.computer-helper {
   border: 3px solid var(--line);
   border-radius: 24px;
   box-shadow: var(--soft-shadow);
@@ -346,7 +346,7 @@ input {
   transform: translateY(-2px);
 }
 
-.monster-truck {
+.computer-helper {
   grid-area: helper;
   min-height: 0;
   padding: clamp(10px, 1.15vw, 14px);
@@ -358,7 +358,7 @@ input {
   background: linear-gradient(145deg, #fffdf6 0%, #e9fff2 100%);
 }
 
-.monster-svg {
+.computer-svg {
   width: 100%;
   max-width: 320px;
   max-height: var(--helper-svg-height);
@@ -366,108 +366,87 @@ input {
   transform-origin: 50% 80%;
 }
 
-.monster-dancer {
+.computer-dancer {
   transform-origin: 50% 70%;
-  animation: monster-idle 1500ms ease-in-out infinite;
+  animation: computer-idle 1500ms ease-in-out infinite;
 }
 
-.monster-suspension,
-.monster-smile,
-.monster-frown {
+.computer-arm,
+.computer-smile,
+.computer-frown {
   stroke: var(--line);
-  stroke-width: 8;
+  stroke-width: 7;
   stroke-linecap: round;
   stroke-linejoin: round;
+  fill: none;
 }
 
-.monster-body,
-.monster-hood,
-.monster-cab,
-.monster-window,
-.monster-roof,
-.monster-light,
-.monster-bumper,
-.monster-cheek,
-.monster-mouth {
+.computer-body,
+.computer-screen,
+.computer-neck,
+.computer-keyboard,
+.computer-hand,
+.computer-button {
   stroke: var(--line);
   stroke-width: 6;
 }
 
-.monster-body,
-.monster-cab,
-.monster-roof {
-  fill: #ff8e45;
+.computer-body {
+  fill: #ff9b55;
 }
 
-.monster-hood {
-  fill: #4da3a5;
-}
-
-.monster-window {
+.computer-screen {
   fill: #fff8df;
 }
 
-.monster-light {
-  fill: #fff6d7;
+.computer-neck {
+  fill: #f7c06f;
 }
 
-.monster-bumper {
-  fill: #9cc9d9;
+.computer-keyboard {
+  fill: #9fd6e6;
 }
 
-.monster-shadow {
+.computer-hand {
+  fill: var(--butter);
+}
+
+.computer-button {
+  fill: #43a047;
+}
+
+.computer-shadow {
   fill: rgba(47, 48, 52, 0.17);
 }
 
-.monster-wheel {
-  fill: #25262a;
-  stroke: #ffffff;
-  stroke-width: 8;
-}
-
-.monster-rim {
-  fill: #8a4f34;
-  stroke: #ffffff;
-  stroke-width: 6;
-}
-
-.monster-eye {
+.computer-eye {
   fill: #239b68;
 }
 
-.monster-mouth {
-  fill: #25262a;
-}
-
-.monster-cheek {
-  fill: #ffb7a8;
-  stroke-width: 4;
-}
-
-.monster-frown {
+.computer-frown {
   display: none;
 }
 
-.monster-truck.good .monster-smile,
-.monster-truck.ready .monster-smile,
-.monster-truck.helping .monster-smile {
+.computer-helper.good .computer-smile,
+.computer-helper.ready .computer-smile,
+.computer-helper.helping .computer-smile {
   display: block;
 }
 
-.monster-truck.good .monster-smile {
+.computer-helper.good .computer-smile {
   stroke: #178c50;
 }
 
-.monster-truck.try .monster-smile {
+.computer-helper.try .computer-smile {
   display: none;
 }
 
-.monster-truck.try .monster-frown {
+.computer-helper.try .computer-frown {
   display: block;
   stroke: #d84335;
 }
 
-.monster-truck.try .monster-eye {
+.computer-helper.try .computer-eye {
   transform: scaleY(0.62);
   transform-origin: center;
 }
@@ -501,16 +480,16 @@ input {
   font-weight: 900;
 }
 
-.monster-truck.good .monster-dancer {
-  animation: monster-dance 760ms ease-in-out 2;
+.computer-helper.good .computer-dancer {
+  animation: computer-dance 760ms ease-in-out 2;
 }
 
-.monster-truck.try .monster-dancer {
-  animation: monster-wiggle 420ms ease;
+.computer-helper.try .computer-dancer {
+  animation: computer-wiggle 420ms ease;
 }
 
-.monster-truck.helping .monster-dancer {
-  animation: monster-dance 620ms ease-in-out infinite;
+.computer-helper.helping .computer-dancer {
+  animation: computer-dance 620ms ease-in-out infinite;
 }
 
 .keyboard-area {
@@ -625,7 +604,7 @@ input {
   }
 }
 
-@keyframes monster-idle {
+@keyframes computer-idle {
   0%,
   100% {
     transform: translateY(0) rotate(0);
@@ -635,7 +614,7 @@ input {
   }
 }
 
-@keyframes monster-dance {
+@keyframes computer-dance {
   0%,
   100% {
     transform: translateY(0) rotate(0) scale(1);
@@ -651,7 +630,7 @@ input {
   }
 }
 
-@keyframes monster-wiggle {
+@keyframes computer-wiggle {
   0%,
   100% {
     transform: translateX(0);
@@ -780,7 +759,7 @@ input {
   .control-strip,
   .keyboard,
   .action-row,
-  .monster-truck {
+  .computer-helper {
     border-radius: 18px;
   }
 
@@ -803,7 +782,7 @@ input {
     min-height: calc(var(--action-height) + 12px);
   }
 
-  .monster-truck {
+  .computer-helper {
     gap: 6px;
   }
 }
@@ -852,7 +831,7 @@ input {
     flex-wrap: wrap;
   }
 
-  .monster-truck {
+  .computer-helper {
     grid-template-columns: minmax(160px, 0.8fr) 1fr;
     grid-template-rows: auto;
   }
@@ -872,13 +851,13 @@ input {
     justify-content: center;
   }
 
-  .monster-truck {
+  .computer-helper {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
     text-align: center;
   }
 
-  .monster-svg {
+  .computer-svg {
     max-height: 170px;
   }
 

@@ -111,7 +111,7 @@ let soundClipsLoaded = false;
 const targetWordDisplay = document.querySelector("#target-word");
 const wordInput = targetWordDisplay;
 const typedDisplay = document.querySelector("#typed-display");
-const helperTruck = document.querySelector("#helper-truck");
+const helperComputer = document.querySelector("#helper-computer");
 const helperMessageBubble = document.querySelector("#helper-message-bubble");
 const helpTypeButton = document.querySelector("#help-type-button");
 const helperMessage = document.querySelector("#tap-prompt");
@@ -207,7 +207,7 @@ function speakLetter(letter) {
 }
 
 function speakWord(word) {
-  speakText(word, {
+  speakText(word.toLocaleLowerCase(activeLanguage), {
     rate: smoothVoiceDefaults.wordRate,
     pitch: smoothVoiceDefaults.pitch,
     interrupt: true,
@@ -364,8 +364,8 @@ function updateKeyCase() {
 }
 
 function setHelperMood(kind = "ready") {
-  helperTruck.classList.remove("ready", "good", "try", "helping");
-  helperTruck.classList.add(kind);
+  helperComputer.classList.remove("ready", "good", "try", "helping");
+  helperComputer.classList.add(kind);
 
   if (kind === "good") {
     helperMessageBubble.textContent = "Nice letter!";
@@ -398,6 +398,7 @@ function checkCompletion() {
     setHelperMood("good");
     celebrate();
     playSuccessSound();
+    setTimeout(() => speakWord(targetWord), 260);
     advanceToNextWord();
     return;
   }
@@ -431,6 +432,7 @@ function handleLetter(letter) {
   renderTypedLetters();
   pressVisual(rawLetter.toLocaleLowerCase(activeLanguage));
   playSoundClip("letter");
+  speakLetter(rawLetter.toLocaleLowerCase(activeLanguage));
   checkCompletion();
 }
 
@@ -464,6 +466,7 @@ function scheduleListAdvance() {
     const words = wordListForLanguage(activeLanguage);
     wordIndex = (wordIndex + 1) % words.length;
     setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
+    speakWord(targetWord);
   }, 1500);
 }
 
@@ -653,6 +656,7 @@ function setLanguage(language) {
   if (practiceMode === "list") {
     wordIndex = 0;
     setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
+    speakWord(targetWord);
   }
   playSoundClip("move");
 }

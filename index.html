@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="A toddler-friendly keyboard practice app for colorful typing.">
     <title>Little Typing Colors</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=computer-speech">
   </head>
   <body>
     <main class="app-shell" aria-labelledby="app-title">
@@ -62,32 +62,26 @@
         </div>
       </section>
 
-      <aside id="helper-truck" class="monster-truck ready" aria-label="Dancing monster truck helper">
-        <svg class="monster-svg" viewBox="0 0 380 260" role="img" aria-label="Happy dancing monster truck helper">
-          <g class="monster-dancer">
-            <ellipse class="monster-shadow" cx="192" cy="224" rx="128" ry="16"></ellipse>
-            <circle class="monster-wheel" cx="112" cy="198" r="43"></circle>
-            <circle class="monster-wheel" cx="274" cy="198" r="43"></circle>
-            <circle class="monster-rim" cx="112" cy="198" r="19"></circle>
-            <circle class="monster-rim" cx="274" cy="198" r="19"></circle>
-            <path class="monster-suspension" d="M126 177 L170 142 L224 177 M254 177 L218 142 L168 177" fill="none"></path>
-            <path class="monster-body" d="M70 130 q34 -54 104 -58 h76 q54 0 78 54 l13 48 H72z"></path>
-            <path class="monster-hood" d="M70 130 h84 q28 0 44 26 l12 18 H70z"></path>
-            <path class="monster-cab" d="M156 74 h104 q36 0 50 40 l18 60 H132 l-8 -58 q-6 -42 32 -42z"></path>
-            <path class="monster-window" d="M172 92 h76 q24 0 34 26 l8 30 H150 l-5 -31 q-4 -25 27 -25z"></path>
-            <path class="monster-roof" d="M170 51 h82 q22 0 30 22 l4 12 H150 l4 -14 q6 -20 16 -20z"></path>
-            <circle class="monster-light" cx="98" cy="153" r="18"></circle>
-            <circle class="monster-light" cx="304" cy="153" r="18"></circle>
-            <rect class="monster-bumper" x="104" y="169" width="176" height="24" rx="12"></rect>
-            <g class="monster-face">
-              <circle class="monster-eye" cx="188" cy="119" r="9"></circle>
-              <circle class="monster-eye" cx="236" cy="119" r="9"></circle>
-              <path class="monster-smile" d="M176 148 q38 32 82 0" fill="none"></path>
-              <path class="monster-frown" d="M178 162 q38 -24 78 0" fill="none"></path>
-              <path class="monster-mouth" d="M197 154 q18 16 38 0 q-6 30 -29 28 q-15 -2 -9 -28z"></path>
-              <circle class="monster-cheek" cx="160" cy="145" r="7"></circle>
-              <circle class="monster-cheek" cx="270" cy="145" r="7"></circle>
+      <aside id="helper-computer" class="computer-helper ready" aria-label="Friendly dancing computer helper">
+        <svg class="computer-svg" viewBox="0 0 380 260" role="img" aria-label="Happy dancing computer helper">
+          <g class="computer-dancer">
+            <ellipse class="computer-shadow" cx="190" cy="228" rx="118" ry="14"></ellipse>
+            <path class="computer-arm left" d="M78 128 q-38 14 -45 50"></path>
+            <path class="computer-arm right" d="M302 128 q38 14 45 50"></path>
+            <circle class="computer-hand" cx="32" cy="181" r="17"></circle>
+            <circle class="computer-hand" cx="348" cy="181" r="17"></circle>
+            <rect class="computer-body" x="72" y="36" width="236" height="160" rx="34"></rect>
+            <rect class="computer-screen" x="104" y="64" width="172" height="92" rx="24"></rect>
+            <g class="computer-face">
+              <circle class="computer-eye" cx="158" cy="108" r="10"></circle>
+              <circle class="computer-eye" cx="222" cy="108" r="10"></circle>
+              <path class="computer-smile" d="M152 133 q38 28 76 0" fill="none"></path>
+              <path class="computer-frown" d="M154 143 q36 -22 72 0" fill="none"></path>
             </g>
+            <rect class="computer-neck" x="164" y="194" width="52" height="22" rx="8"></rect>
+            <rect class="computer-keyboard" x="96" y="214" width="188" height="30" rx="15"></rect>
+            <circle class="computer-button" cx="286" cy="85" r="8"></circle>
+            <circle class="computer-button" cx="286" cy="113" r="8"></circle>
           </g>
         </svg>
         <div class="helper-copy">
@@ -144,6 +138,6 @@
 
     <div id="celebration-layer" class="celebration-layer" aria-hidden="true"></div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=computer-speech"></script>
   </body>
 </html>
