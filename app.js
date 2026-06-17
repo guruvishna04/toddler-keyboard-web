@@ -416,10 +416,28 @@ function getAudioContext() {
   return audioContext;
 }
 
+function soundIsReady() {
+  return Boolean(audioContext && audioContext.state === "running");
+}
+
+function updateSoundToggle() {
+  if (!soundEnabled) {
+    soundToggle.textContent = "Sound Off";
+    soundToggle.setAttribute("aria-pressed", "false");
+    return;
+  }
+
+  soundToggle.textContent = soundIsReady() ? "Sound On" : "Tap Sound";
+  soundToggle.setAttribute("aria-pressed", "true");
+}
+
 function unlockSound() {
   const context = getAudioContext();
   const markSoundReady = () => {
-    document.documentElement.dataset.soundReady = context.state;
+    if (context) {
+      document.documentElement.dataset.soundReady = context.state;
+    }
+    updateSoundToggle();
   };
   if (context && context.state === "suspended") {
     context.resume().then(markSoundReady).catch(markSoundReady);
@@ -432,6 +450,7 @@ function unlockSound() {
   }
   preloadSoundClips();
   loadSpeechVoices();
+  updateSoundToggle();
 }
 
 function playTone(frequency, duration = 0.11, options = {}) {
@@ -755,6 +774,16 @@ function celebrate() {
 
 function toggleSound() {
   unlockSound();
+  if (soundEnabled && !soundIsReady()) {
+    window.setTimeout(() => {
+      updateSoundToggle();
+      if (soundIsReady()) {
+        playSoundClip("soundOn");
+      }
+    }, 120);
+    return;
+  }
+
   if (soundEnabled) {
     playSoundClip("soundOff");
     soundEnabled = false;
@@ -762,8 +791,7 @@ function toggleSound() {
     soundEnabled = true;
     playSoundClip("soundOn");
   }
-  soundToggle.textContent = soundEnabled ? "Sound On" : "Sound Off";
-  soundToggle.setAttribute("aria-pressed", String(soundEnabled));
+  updateSoundToggle();
 }
 
 function toggleCapsLock() {
@@ -776,7 +804,7 @@ function syncSettingsDrawer() {
   if (!settingsDrawer || !("matchMedia" in window)) {
     return;
   }
-  settingsDrawer.open = !window.matchMedia("(max-width: 1180px)").matches;
+  settingsDrawer.open = false;
 }
 
 function focusableControls() {
@@ -973,6 +1001,7 @@ if ("speechSynthesis" in window) {
   window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
 syncSettingsDrawer();
+updateSoundToggle();
 window.addEventListener("resize", syncSettingsDrawer);
 if (!loadSavedSession()) {
   setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
