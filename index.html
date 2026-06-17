@@ -30,30 +30,10 @@
 
           <div class="progress-dots" aria-hidden="true"></div>
         </div>
-
-        <aside id="helper-truck" class="helper-truck ready" aria-label="Helper tow truck">
-          <svg class="truck-svg" viewBox="0 0 260 130" role="img" aria-label="Friendly tow truck helper">
-            <rect class="truck-bed" x="34" y="54" width="138" height="42" rx="14"></rect>
-            <rect class="truck-cab" x="126" y="30" width="68" height="66" rx="16"></rect>
-            <path class="truck-boom" d="M54 54 L24 22 L18 60" fill="none"></path>
-            <path class="truck-hook" d="M18 60 q10 8 0 16" fill="none"></path>
-            <circle class="truck-wheel" cx="72" cy="99" r="18"></circle>
-            <circle class="truck-wheel" cx="165" cy="99" r="18"></circle>
-            <g class="truck-face">
-              <circle class="truck-eye" cx="148" cy="55" r="6"></circle>
-              <circle class="truck-eye" cx="174" cy="55" r="6"></circle>
-              <path class="truck-smile" d="M146 75 q17 14 34 0" fill="none"></path>
-              <path class="truck-frown" d="M146 84 q17 -12 34 0" fill="none"></path>
-            </g>
-          </svg>
-          <div id="helper-message-bubble" class="helper-message-bubble" aria-live="polite">I can help!</div>
-          <button id="help-type-button" class="help-type-button" type="button">Help type</button>
-        </aside>
         <p id="helper-message" class="helper-message" aria-live="polite">Pick a color. Press D and A.</p>
       </section>
 
-      <section class="control-shelf" aria-label="Word and color controls">
-        <div class="word-editor">
+      <section class="word-editor" aria-label="Word controls">
           <div class="editor-title">Pick a word</div>
           <div class="word-presets-scroll">
             <div id="word-presets" class="word-presets" aria-label="Choose a word">
@@ -80,8 +60,10 @@
             <input id="word-input" class="word-input" type="text" value="dada" maxlength="8" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Practice word">
             <button id="use-word-button" class="use-word-button" type="button">Use</button>
           </div>
-        </div>
+      </section>
 
+      <section class="color-panel" aria-label="Color controls">
+        <div class="editor-title">Color</div>
         <div class="color-tray" aria-label="Choose letter color">
           <button class="color-button rainbow-button" type="button" data-color-mode="rainbow" aria-label="Choose rainbow">
             <span></span>
@@ -106,6 +88,35 @@
           </button>
         </div>
       </section>
+
+      <aside id="helper-truck" class="helper-truck ready" aria-label="Helper tow truck">
+        <svg class="truck-svg" viewBox="0 0 320 220" role="img" aria-label="Friendly tow truck helper">
+          <path class="truck-boom" d="M94 92 L50 42 L42 112" fill="none"></path>
+          <circle class="truck-light" cx="50" cy="42" r="15"></circle>
+          <path class="truck-hook" d="M42 112 q18 10 2 28" fill="none"></path>
+          <rect class="truck-roof" x="118" y="34" width="118" height="26" rx="13"></rect>
+          <rect class="truck-cab" x="88" y="54" width="166" height="92" rx="32"></rect>
+          <rect class="truck-window" x="114" y="68" width="112" height="46" rx="18"></rect>
+          <rect class="truck-bed" x="42" y="112" width="236" height="56" rx="26"></rect>
+          <rect class="truck-side" x="62" y="93" width="52" height="54" rx="18"></rect>
+          <circle class="truck-headlight" cx="76" cy="134" r="18"></circle>
+          <circle class="truck-headlight" cx="246" cy="134" r="18"></circle>
+          <g class="truck-face">
+            <circle class="truck-eye" cx="148" cy="91" r="10"></circle>
+            <circle class="truck-eye" cx="192" cy="91" r="10"></circle>
+            <path class="truck-smile" d="M132 124 q38 30 76 0" fill="none"></path>
+            <path class="truck-frown" d="M134 140 q36 -24 72 0" fill="none"></path>
+            <path class="truck-tooth" d="M154 136 h36 v28 q-18 10 -36 0z"></path>
+          </g>
+          <rect class="truck-bumper" x="84" y="154" width="152" height="24" rx="12"></rect>
+          <circle class="truck-wheel" cx="90" cy="176" r="24"></circle>
+          <circle class="truck-wheel" cx="230" cy="176" r="24"></circle>
+        </svg>
+        <div class="helper-copy">
+          <div id="helper-message-bubble" class="helper-message-bubble" aria-live="polite">I can help!</div>
+          <button id="help-type-button" class="help-type-button" type="button">Help type</button>
+        </div>
+      </aside>
 
       <section class="keyboard-area" aria-label="Keyboard controls">
         <div class="keyboard" aria-label="Alphabet keyboard">
