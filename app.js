@@ -776,7 +776,7 @@ function syncSettingsDrawer() {
   if (!settingsDrawer || !("matchMedia" in window)) {
     return;
   }
-  settingsDrawer.open = !window.matchMedia("(max-width: 760px)").matches;
+  settingsDrawer.open = !window.matchMedia("(max-width: 1180px)").matches;
 }
 
 function focusableControls() {

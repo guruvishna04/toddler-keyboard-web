@@ -62,7 +62,7 @@ input {
   padding: var(--app-pad);
   display: grid;
   grid-template-columns: minmax(0, 0.5fr) minmax(0, 1.5fr);
-  grid-template-rows: minmax(0, 0.9fr) minmax(0, 0.34fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 0.84fr) auto minmax(0, 1fr);
   grid-template-areas:
     "stage stage"
     "controls controls"
@@ -292,21 +292,46 @@ input {
 
 .settings-summary {
   display: none;
-  padding: 7px 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 7px 18px;
   border: 3px solid var(--line);
   border-radius: 999px;
   background: var(--sky);
   font-size: clamp(1rem, 1.55vw, 1.25rem);
   font-weight: 900;
   list-style: none;
+  text-align: center;
 }
 
 .settings-summary::-webkit-details-marker {
   display: none;
 }
 
+.settings-summary::after {
+  content: "+";
+  width: 28px;
+  height: 28px;
+  display: inline-grid;
+  place-items: center;
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  line-height: 1;
+}
+
+details[open] > .settings-summary::after {
+  content: "-";
+}
+
 details[open].settings-drawer {
   align-content: center;
+}
+
+.settings-drawer:not([open]) {
+  min-height: 0;
 }
 
 .language-select {
@@ -817,7 +842,7 @@ details[open].settings-drawer {
   }
 
   .app-shell {
-    grid-template-rows: minmax(0, 0.82fr) minmax(0, 0.25fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 0.78fr) auto minmax(0, 1fr);
   }
 
   .word-row {
@@ -894,7 +919,7 @@ details[open].settings-drawer {
   }
 
   .app-shell {
-    grid-template-rows: minmax(0, 0.76fr) minmax(0, 0.2fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 0.72fr) auto minmax(0, 1fr);
   }
 
   .word-row {
@@ -930,6 +955,50 @@ details[open].settings-drawer {
 
   .computer-helper {
     gap: 6px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .settings-summary {
+    display: flex;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+
+  .control-strip {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .settings-drawer:not([open]) {
+    min-height: 68px;
+    align-content: center;
+  }
+
+  details[open].settings-drawer {
+    align-content: start;
+  }
+
+  .settings-drawer .editor-title {
+    display: none;
+  }
+
+  .settings-drawer .color-panel {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .settings-drawer .color-tray {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 2px 8px;
+  }
+
+  .settings-drawer .action-row {
+    min-height: 0;
+    grid-template-columns: minmax(118px, 1.2fr) repeat(5, minmax(0, 1fr));
+    gap: 7px;
   }
 }
 
@@ -979,11 +1048,6 @@ details[open].settings-drawer {
     font-size: clamp(0.96rem, 1.7vw, 1.25rem);
   }
 
-  .settings-summary {
-    display: inline-block;
-    justify-self: start;
-  }
-
   .control-strip {
     grid-template-columns: 1fr;
     align-content: start;
@@ -991,7 +1055,7 @@ details[open].settings-drawer {
   }
 
   .color-panel {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: 1fr;
     gap: 10px;
   }
 
