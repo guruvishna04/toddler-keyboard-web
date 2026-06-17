@@ -4,7 +4,7 @@ A deployable static browser app for a 3-year-old practicing the word `dada`.
 
 ## What It Does
 
-- Shows a large target word and a large typed word in one copy-practice stage
+- Shows the target word and typed word side by side in one copy-practice stage
 - Lets you edit the practice word up to 8 letters
 - Includes a scrollable baby word list, including `dada`, `Dada`, `DADA`, `mama`, `papa`, `Baby`, `cat`, `Dog`, `cashew`, `banana`, and `cookie`
 - Lets you type a custom word and press `Use`
@@ -14,7 +14,7 @@ A deployable static browser app for a 3-year-old practicing the word `dada`.
 - Preserves the target word's capital/small-case pattern while typing
 - Includes Caps mode for uppercase practice while still accepting lowercase/uppercase as correct
 - Includes rainbow color choices, plus a rainbow mode that changes color per letter
-- Shows an original animated helper tow truck for encouragement and retry feedback
+- Shows an original animated helper tow truck with smiling and retry expressions
 - The helper truck can type the remaining letters when `Help type` is pressed
 - Has a `Full` button for fullscreen practice
 - Plays short generated tones with a sound on/off button

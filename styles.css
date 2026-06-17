@@ -77,8 +77,27 @@ input {
     linear-gradient(165deg, #ffffff 0%, #fff4ba 50%, #e9fff3 100%);
   box-shadow: var(--shadow);
   display: grid;
-  grid-template-rows: 1fr 1fr auto;
+  grid-template-rows: 1fr auto;
   gap: clamp(10px, 1.5vw, 18px);
+}
+
+.practice-strip {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "see type"
+    "dots dots";
+}
+
+.given-row {
+  grid-area: see;
+}
+
+.type-row {
+  grid-area: type;
+}
+
+.practice-strip .progress-dots {
+  grid-area: dots;
 }
 
 .word-row {
@@ -188,7 +207,8 @@ input {
 
 .truck-boom,
 .truck-hook,
-.truck-mouth {
+.truck-smile,
+.truck-frown {
   stroke: var(--line);
   stroke-width: 6;
   stroke-linecap: round;
@@ -202,6 +222,34 @@ input {
 
 .truck-eye {
   fill: var(--line);
+}
+
+.truck-frown {
+  display: none;
+}
+
+.helper-truck.good .truck-smile,
+.helper-truck.ready .truck-smile,
+.helper-truck.helping .truck-smile {
+  display: block;
+}
+
+.helper-truck.good .truck-smile {
+  stroke: #178c50;
+}
+
+.helper-truck.try .truck-smile {
+  display: none;
+}
+
+.helper-truck.try .truck-frown {
+  display: block;
+  stroke: #d84335;
+}
+
+.helper-truck.try .truck-eye {
+  transform: scaleY(0.72);
+  transform-origin: center;
 }
 
 .helper-message-bubble {
@@ -622,6 +670,14 @@ input {
   .copy-card {
     height: auto;
     min-height: 420px;
+  }
+
+  .practice-strip {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "see"
+      "type"
+      "dots";
   }
 
   .keyboard {
