@@ -29,6 +29,22 @@ function normalizeWord(value, fallback = "dada") {
   return lettersOnly.slice(0, 8) || fallback;
 }
 
+function wordSizeForLength(length) {
+  if (length <= 4) {
+    return "clamp(5rem, 13vw, 11rem)";
+  }
+  if (length <= 6) {
+    return "clamp(4rem, 9vw, 8rem)";
+  }
+  return "clamp(3.1rem, 7vw, 6rem)";
+}
+
+function syncWordSize() {
+  const size = wordSizeForLength(targetWord.length);
+  targetWordDisplay.style.fontSize = size;
+  typedDisplay.style.setProperty("--typed-letter-size", size);
+}
+
 function displayLetterForTarget(rawLetter, index) {
   const targetLetter = targetWord[index] || rawLetter;
   return targetLetter === targetLetter.toLocaleUpperCase()
@@ -177,6 +193,7 @@ function setTargetWord(value) {
   targetWordDisplay.setAttribute("aria-label", `Target word ${targetWord}`);
   wordInput.value = targetWord;
   typedLetters = [];
+  syncWordSize();
   renderTypedLetters();
   updatePresetSelection();
   helperMessage.textContent = nextInstruction();

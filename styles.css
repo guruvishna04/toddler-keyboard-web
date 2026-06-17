@@ -9,6 +9,7 @@
   --line: #2b2b2b;
   --focus: #00a8a8;
   --shadow: 0 12px 0 rgba(43, 43, 43, 0.16);
+  --big-pointer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 42 42'%3E%3Cpath fill='%23ffffff' stroke='%232b2b2b' stroke-width='3' d='M7 4l25 18-12 2 7 12-6 3-7-12-8 9z'/%3E%3C/svg%3E") 7 4, pointer;
 }
 
 * {
@@ -33,11 +34,13 @@ body {
     linear-gradient(rgba(112, 214, 255, 0.22) 24px, transparent 1px),
     linear-gradient(135deg, #fff8dc 0%, #dff8ff 48%, #e6f8dc 100%);
   background-size: 48px 48px, 48px 48px, auto;
+  cursor: var(--big-pointer);
 }
 
 button,
 input {
   font: inherit;
+  cursor: var(--big-pointer);
 }
 
 .app-shell {
@@ -119,6 +122,7 @@ input {
   letter-spacing: 0;
   overflow-wrap: anywhere;
   text-align: center;
+  white-space: nowrap;
 }
 
 .typed-display {
@@ -129,7 +133,8 @@ input {
   align-items: center;
   justify-content: center;
   gap: clamp(6px, 1vw, 14px);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 .typed-display.empty::before {
@@ -142,10 +147,11 @@ input {
 .typed-letter {
   display: inline-block;
   min-width: 0.56em;
-  font-size: clamp(5rem, 12vw, 10rem);
+  font-size: var(--typed-letter-size, clamp(5rem, 12vw, 10rem));
   font-weight: 900;
   line-height: 0.82;
   animation: pop-in 180ms ease-out;
+  white-space: nowrap;
 }
 
 .progress-dots {
@@ -244,6 +250,29 @@ input {
   gap: 7px;
 }
 
+.word-presets-scroll {
+  max-height: clamp(112px, 18vh, 146px);
+  padding: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.word-presets-scroll::-webkit-scrollbar {
+  width: 18px;
+}
+
+.word-presets-scroll::-webkit-scrollbar-track {
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.word-presets-scroll::-webkit-scrollbar-thumb {
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  background: var(--sky);
+}
+
 .preset-button {
   min-height: 50px;
   border: 4px solid var(--line);
@@ -252,7 +281,6 @@ input {
   color: var(--ink);
   font-size: clamp(1.1rem, 1.8vw, 1.55rem);
   font-weight: 900;
-  cursor: pointer;
 }
 
 .preset-button.selected,
@@ -278,7 +306,6 @@ input {
   color: var(--ink);
   font-size: clamp(1.05rem, 1.8vw, 1.35rem);
   font-weight: 900;
-  cursor: pointer;
 }
 
 .use-word-button:focus-visible {
@@ -300,7 +327,6 @@ input {
   border: 4px solid var(--line);
   border-radius: 18px;
   background: #ffffff;
-  cursor: pointer;
   transition: transform 140ms ease, box-shadow 140ms ease;
 }
 
@@ -346,7 +372,6 @@ input {
   color: var(--ink);
   font-size: clamp(1.65rem, 3.1vw, 2.6rem);
   font-weight: 900;
-  cursor: pointer;
   box-shadow: 0 7px 0 rgba(43, 43, 43, 0.22);
   transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
 }
@@ -387,7 +412,6 @@ input {
   color: var(--ink);
   font-size: clamp(1.05rem, 1.9vw, 1.4rem);
   font-weight: 900;
-  cursor: pointer;
 }
 
 .action-button.primary {
@@ -510,6 +534,10 @@ input {
 
   .word-presets {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .word-presets-scroll {
+    max-height: 190px;
   }
 
   .custom-word-row {
