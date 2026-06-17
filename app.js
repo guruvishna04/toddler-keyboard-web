@@ -6,6 +6,56 @@ const smoothVoiceDefaults = {
   wordRate: 0.72,
   pitch: 1.05,
 };
+const wordBank = {
+  "en-US": [
+    "dada", "mama", "papa", "baby", "cat", "dog", "apple", "milk", "ball", "teddy",
+    "happy", "truck", "car", "bus", "train", "boat", "plane", "book", "star", "moon",
+    "sun", "tree", "home", "house", "bed", "bath", "cup", "spoon", "plate", "bowl",
+    "shoe", "sock", "hat", "coat", "shirt", "pants", "hand", "foot", "nose", "eye",
+    "ear", "hair", "smile", "laugh", "play", "jump", "run", "walk", "clap", "wave",
+    "hug", "kiss", "nap", "sleep", "wake", "light", "door", "chair", "table", "block",
+    "cube", "doll", "drum", "bell", "carrot", "grape", "melon", "berry", "banana", "orange",
+    "water", "juice", "bread", "rice", "pasta", "cookie", "cake", "toast", "cheese", "yogurt",
+    "flower", "cloud", "rain", "snow", "leaf", "grass", "sand", "beach", "park", "slide",
+    "swing", "friend", "share", "kind", "please", "thank", "yes", "no", "up", "down",
+  ],
+  "es-ES": [
+    "papa", "mama", "bebe", "gato", "perro", "casa", "sol", "luna", "auto", "leche",
+    "bola", "mano", "agua", "pan", "arroz", "sopa", "uva", "melon", "pera", "manzana",
+    "banana", "queso", "yogur", "galleta", "torta", "mesa", "silla", "cama", "puerta", "luz",
+    "flor", "nube", "lluvia", "nieve", "hoja", "pasto", "playa", "arena", "parque", "tren",
+    "bus", "barco", "avion", "libro", "estrela", "oso", "pato", "pez", "rana", "boca",
+    "pie", "nariz", "ojo", "oreja", "pelo", "risa", "jugar", "saltar", "correr", "caminar",
+    "aplauso", "ola", "abrazo", "beso", "siesta", "dormir", "despi", "vaso", "plato", "taza",
+    "cuchara", "zapato", "media", "gorro", "abrigo", "camisa", "pantalon", "bloque", "cubo", "muneca",
+    "tambor", "campana", "carro", "jugo", "tostada", "pasta", "pastel", "amigo", "dulce", "suave",
+    "grande", "chico", "rojo", "azul", "verde", "amarillo", "morada", "hola", "gracias", "vamos",
+  ],
+  "fr-FR": [
+    "papa", "maman", "bebe", "chat", "chien", "maison", "soleil", "lune", "auto", "lait",
+    "balle", "main", "eau", "pain", "riz", "soupe", "raisin", "melon", "poire", "pomme",
+    "banane", "fromage", "yaourt", "biscuit", "gateau", "table", "chaise", "lit", "porte", "lumiere",
+    "fleur", "nuage", "pluie", "neige", "feuille", "herbe", "plage", "sable", "parc", "train",
+    "bus", "bateau", "avion", "livre", "etoile", "ours", "canard", "poisson", "grenouil", "pied",
+    "nez", "oeil", "oreille", "cheveu", "rire", "jouer", "sauter", "courir", "marcher", "clap",
+    "vague", "calin", "bisou", "sieste", "dodo", "reveil", "verre", "assiete", "tasse", "cuillere",
+    "soulier", "chauson", "bonnet", "manteau", "chemise", "pantalon", "bloc", "cube", "poupee", "tambour",
+    "cloche", "camion", "jus", "toast", "pates", "ami", "doux", "grand", "petit", "rouge",
+    "bleu", "vert", "jaune", "violet", "bonjour", "merci", "oui", "non", "haut", "bas",
+  ],
+  "de-DE": [
+    "papa", "mama", "baby", "katze", "hund", "haus", "sonne", "mond", "auto", "milch",
+    "ball", "hand", "wasser", "brot", "reis", "suppe", "traube", "melon", "birne", "apfel",
+    "banane", "kase", "joghurt", "keks", "kuchen", "tisch", "stuhl", "bett", "tur", "licht",
+    "blume", "wolke", "regen", "schnee", "blatt", "gras", "strand", "sand", "park", "zug",
+    "bus", "boot", "flug", "buch", "stern", "bar", "ente", "fisch", "frosch", "fuss",
+    "nase", "auge", "ohr", "haar", "lachen", "spielen", "hupfen", "rennen", "gehen", "klatsch",
+    "winken", "kuschel", "kuss", "nicker", "schlaf", "wach", "becher", "teller", "tasse", "loeffel",
+    "schuh", "socke", "mutze", "mantel", "hemd", "hose", "block", "wurfel", "puppe", "trommel",
+    "glocke", "laster", "saft", "toast", "nudeln", "freund", "weich", "gross", "klein", "rot",
+    "blau", "grun", "gelb", "lila", "hallo", "danke", "ja", "nein", "hoch", "runter",
+  ],
+};
 
 let typedLetters = [];
 let selectedColor = defaultColor;
@@ -13,6 +63,9 @@ let colorMode = "single";
 let capsLockOn = false;
 let soundEnabled = true;
 let activeLanguage = "en-US";
+let wordIndex = 0;
+let practiceMode = "list";
+let advanceTimer = null;
 let audioContext = null;
 let speechVoices = [];
 
@@ -38,6 +91,15 @@ const wordStage = document.querySelector(".word-stage");
 function normalizeWord(value, fallback = "dada") {
   const lettersOnly = value.replace(/[^a-z]/gi, "");
   return lettersOnly.slice(0, 8) || fallback;
+}
+
+function wordListForLanguage(language) {
+  return wordBank[language] || wordBank["en-US"];
+}
+
+function listWordAt(index) {
+  const words = wordListForLanguage(activeLanguage);
+  return words[index % words.length];
 }
 
 function wordSizeForLength(length) {
@@ -236,6 +298,7 @@ function checkCompletion() {
     playTone(660, 0.16);
     setTimeout(() => playTone(880, 0.18), 120);
     setTimeout(() => speakWord(targetWord), 260);
+    advanceToNextWord();
     return;
   }
 
@@ -271,7 +334,17 @@ function handleLetter(letter) {
   checkCompletion();
 }
 
-function setTargetWord(value) {
+function setTargetWord(value, options = {}) {
+  if (advanceTimer) {
+    window.clearTimeout(advanceTimer);
+    advanceTimer = null;
+  }
+  if (options.practiceMode) {
+    practiceMode = options.practiceMode;
+  }
+  if (Number.isInteger(options.wordIndex)) {
+    wordIndex = options.wordIndex;
+  }
   targetWord = normalizeWord(value);
   targetWordDisplay.value = targetWord;
   targetWordDisplay.setAttribute("aria-label", `Target word ${targetWord}`);
@@ -281,6 +354,23 @@ function setTargetWord(value) {
   helperMessage.textContent = nextInstruction();
   setHelperMood("ready");
   updateNextKeyHighlight();
+}
+
+function setManualTargetWord(value) {
+  setTargetWord(value, { practiceMode: "manual" });
+}
+
+function advanceToNextWord() {
+  if (practiceMode !== "list") {
+    return;
+  }
+
+  advanceTimer = window.setTimeout(() => {
+    const words = wordListForLanguage(activeLanguage);
+    wordIndex = (wordIndex + 1) % words.length;
+    setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
+    speakWord(targetWord);
+  }, 1500);
 }
 
 function pressVisual(letter) {
@@ -384,6 +474,10 @@ async function toggleFullscreen() {
 
 function setLanguage(language) {
   activeLanguage = language;
+  if (practiceMode === "list") {
+    wordIndex = 0;
+    setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
+  }
   speakWord(targetWord);
 }
 
@@ -393,14 +487,14 @@ wordInput.addEventListener("input", () => {
     wordInput.value = cursorWord;
   }
   if (cursorWord) {
-    setTargetWord(cursorWord);
+    setManualTargetWord(cursorWord);
   }
 });
 
 wordInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
-    setTargetWord(wordInput.value);
+    setManualTargetWord(wordInput.value);
   }
 });
 
@@ -459,5 +553,5 @@ loadSpeechVoices();
 if ("speechSynthesis" in window) {
   window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
-setTargetWord(targetWord);
+setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
 updateKeyCase();

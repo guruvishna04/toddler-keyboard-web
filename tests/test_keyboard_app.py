@@ -67,6 +67,12 @@ class ToddlerKeyboardAppTests(unittest.TestCase):
         js = self.read("app.js")
 
         self.assertRegex(js, r"let\s+targetWord\s*=\s*['\"]dada['\"]")
+        self.assertIn("wordBank", js)
+        self.assertIn("practiceMode", js)
+        self.assertIn('let practiceMode = "list"', js)
+        self.assertIn("setManualTargetWord", js)
+        self.assertIn("advanceToNextWord", js)
+        self.assertIn("advanceTimer", js)
         self.assertIn("selectedColor", js)
         self.assertIn("wordInput", js)
         self.assertNotIn("useWordButton", js)
@@ -108,6 +114,21 @@ class ToddlerKeyboardAppTests(unittest.TestCase):
         self.assertIn("keydown", js)
         self.assertIn("toLocaleLowerCase", js)
         self.assertNotIn("letter.toLowerCase(),", js)
+
+    def test_javascript_has_100_child_friendly_words_per_language(self):
+        js = self.read("app.js")
+        languages = ("en-US", "es-ES", "fr-FR", "de-DE")
+
+        for language in languages:
+            with self.subTest(language=language):
+                match = re.search(rf'"{language}":\s*\[(.*?)\]', js, re.S)
+                self.assertIsNotNone(match, f"{language} should have a word list")
+                words = re.findall(r'"([a-z]+)"', match.group(1))
+
+                self.assertEqual(100, len(words), f"{language} should have 100 words")
+                self.assertEqual(len(words), len(set(words)), f"{language} words should be unique")
+                for word in words:
+                    self.assertRegex(word, r"^[a-z]{1,8}$", f"{word} should fit the keyboard")
 
     def test_css_uses_large_child_friendly_touch_targets(self):
         css = self.read("styles.css")
