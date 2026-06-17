@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="A toddler-friendly keyboard practice app for colorful typing.">
     <title>Little Typing Colors</title>
-    <link rel="stylesheet" href="styles.css?v=mobile-responsive">
+    <link rel="stylesheet" href="styles.css?v=settings-drawer-mobile">
   </head>
   <body>
     <main class="app-shell" aria-labelledby="app-title">
       <section class="word-stage" aria-label="Typing practice">
         <div class="copy-card practice-strip">
           <div class="word-row given-row">
-            <span class="word-label">See word</span>
+            <span class="word-label">Look</span>
             <div id="word-picture" class="word-picture" role="img" aria-label="Picture for dada">👨</div>
             <h1 id="app-title" class="target-word">
               <input id="target-word" class="target-word-input" type="text" value="dada" maxlength="8" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Reference word">
@@ -34,7 +34,8 @@
         </div>
       </section>
 
-      <section class="control-strip" aria-label="Color controls">
+      <details id="settings-drawer" class="control-strip settings-drawer" aria-label="Practice settings" open>
+        <summary class="settings-summary">Settings</summary>
         <div class="color-panel" aria-label="Color controls">
           <div class="editor-title">Color</div>
           <div class="color-tray" aria-label="Choose letter color">
@@ -61,7 +62,21 @@
             </button>
           </div>
         </div>
-      </section>
+
+        <div class="action-row">
+          <select id="language-select" class="language-select" aria-label="Choose language">
+            <option value="en-US">English</option>
+            <option value="es-ES">Spanish</option>
+            <option value="fr-FR">French</option>
+            <option value="de-DE">German</option>
+          </select>
+          <button id="caps-toggle" class="action-button caps-toggle" type="button" aria-label="Caps Lock" aria-pressed="false">Caps</button>
+          <button id="backspace-button" class="action-button" type="button" aria-label="Backspace">Back</button>
+          <button id="clear-button" class="action-button primary" type="button" aria-label="Clear typed letters">Clear</button>
+          <button id="sound-toggle" class="action-button" type="button" aria-pressed="true">Sound On</button>
+          <button id="fullscreen-button" class="action-button" type="button" aria-label="Fullscreen">Full</button>
+        </div>
+      </details>
 
       <aside id="helper-computer" class="computer-helper ready" aria-label="Friendly dancing computer helper">
         <svg class="computer-svg" viewBox="0 0 380 260" role="img" aria-label="Happy dancing computer helper">
@@ -124,19 +139,6 @@
           <button class="key-button" type="button" data-key="z" aria-label="Type Z">Z</button>
         </div>
 
-        <div class="action-row">
-          <select id="language-select" class="language-select" aria-label="Choose language">
-            <option value="en-US">English</option>
-            <option value="es-ES">Spanish</option>
-            <option value="fr-FR">French</option>
-            <option value="de-DE">German</option>
-          </select>
-          <button id="caps-toggle" class="action-button caps-toggle" type="button" aria-label="Caps Lock" aria-pressed="false">Caps</button>
-          <button id="backspace-button" class="action-button" type="button" aria-label="Backspace">Back</button>
-          <button id="clear-button" class="action-button primary" type="button" aria-label="Clear typed letters">Clear</button>
-          <button id="sound-toggle" class="action-button" type="button" aria-pressed="true">Sound On</button>
-          <button id="fullscreen-button" class="action-button" type="button" aria-label="Fullscreen">Full</button>
-        </div>
       </section>
     </main>
 
@@ -146,6 +148,6 @@
       window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
-    <script src="app.js?v=speech-letter-flow"></script>
+    <script src="app.js?v=settings-drawer-mobile"></script>
   </body>
 </html>

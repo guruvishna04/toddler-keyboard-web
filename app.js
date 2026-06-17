@@ -217,6 +217,7 @@ const capsToggle = document.querySelector("#caps-toggle");
 const soundToggle = document.querySelector("#sound-toggle");
 const fullscreenButton = document.querySelector("#fullscreen-button");
 const languageSelect = document.querySelector("#language-select");
+const settingsDrawer = document.querySelector("#settings-drawer");
 const celebrationLayer = document.querySelector("#celebration-layer");
 const wordStage = document.querySelector(".word-stage");
 const remoteControlKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "];
@@ -272,12 +273,12 @@ function loadSavedSession() {
 
 function wordSizeForLength(length) {
   if (length <= 4) {
-    return "clamp(5rem, 13vw, 11rem)";
+    return "clamp(3.4rem, 12vw, 10rem)";
   }
   if (length <= 6) {
-    return "clamp(3.4rem, 7vw, 6rem)";
+    return "clamp(2.7rem, 6.5vw, 5.6rem)";
   }
-  return "clamp(2.8rem, 5.8vw, 5rem)";
+  return "clamp(2.25rem, 5.4vw, 4.8rem)";
 }
 
 function syncWordSize() {
@@ -771,8 +772,15 @@ function toggleCapsLock() {
   playSoundClip(capsLockOn ? "capsOn" : "capsOff");
 }
 
+function syncSettingsDrawer() {
+  if (!settingsDrawer || !("matchMedia" in window)) {
+    return;
+  }
+  settingsDrawer.open = !window.matchMedia("(max-width: 760px)").matches;
+}
+
 function focusableControls() {
-  return Array.from(document.querySelectorAll("button, select, input"))
+  return Array.from(document.querySelectorAll("button, select, input, summary"))
     .filter((element) => !element.disabled && element.offsetParent !== null);
 }
 
@@ -964,6 +972,8 @@ preloadSoundClips();
 if ("speechSynthesis" in window) {
   window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
+syncSettingsDrawer();
+window.addEventListener("resize", syncSettingsDrawer);
 if (!loadSavedSession()) {
   setTargetWord(listWordAt(wordIndex), { practiceMode: "list", wordIndex });
 }

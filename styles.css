@@ -280,9 +280,33 @@ input {
   min-height: 0;
   padding: var(--panel-pad);
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.82fr);
+  gap: var(--app-gap);
   align-items: center;
   background: linear-gradient(145deg, #ffffff 0%, #f1fff7 100%);
+}
+
+.settings-drawer {
+  overflow: hidden;
+}
+
+.settings-summary {
+  display: none;
+  padding: 7px 16px;
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  background: var(--sky);
+  font-size: clamp(1rem, 1.55vw, 1.25rem);
+  font-weight: 900;
+  list-style: none;
+}
+
+.settings-summary::-webkit-details-marker {
+  display: none;
+}
+
+details[open].settings-drawer {
+  align-content: center;
 }
 
 .language-select {
@@ -554,7 +578,7 @@ input {
   grid-area: keyboard;
   min-height: 0;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr;
   gap: var(--app-gap);
 }
 
@@ -906,6 +930,86 @@ input {
 
   .computer-helper {
     gap: 6px;
+  }
+}
+
+@media (max-width: 1000px) {
+  :root {
+    --app-pad: 8px;
+    --app-gap: 8px;
+    --card-pad: 8px;
+    --panel-pad: 8px;
+    --key-gap: 6px;
+    --color-size: clamp(46px, 5.6vw, 60px);
+    --target-size: clamp(3.6rem, 7vw, 6.8rem);
+    --typed-size: clamp(3.2rem, 6vw, 5.8rem);
+    --empty-size: clamp(2.9rem, 5.6vw, 5.1rem);
+  }
+
+  .app-shell {
+    grid-template-rows: minmax(0, 0.72fr) auto minmax(0, 1fr);
+  }
+
+  .copy-card {
+    gap: 8px;
+  }
+
+  .word-row {
+    padding: 42px 12px 10px;
+    border-radius: 22px;
+  }
+
+  .given-row {
+    padding-top: 54px;
+  }
+
+  .word-picture {
+    top: 10px;
+    right: 10px;
+    width: clamp(58px, 7vw, 76px);
+    height: clamp(58px, 7vw, 76px);
+    border-radius: 18px;
+    font-size: clamp(2.4rem, 4.8vw, 3.6rem);
+  }
+
+  .tap-prompt {
+    min-width: 96px;
+    margin: -18px 0 0;
+    padding: 6px 14px;
+    font-size: clamp(0.96rem, 1.7vw, 1.25rem);
+  }
+
+  .settings-summary {
+    display: inline-block;
+    justify-self: start;
+  }
+
+  .control-strip {
+    grid-template-columns: 1fr;
+    align-content: start;
+    gap: 8px;
+  }
+
+  .color-panel {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .color-tray {
+    justify-content: space-between;
+    gap: 7px;
+  }
+
+  .action-row {
+    min-height: 0;
+    grid-template-columns: minmax(116px, 1.1fr) repeat(5, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .action-button,
+  .language-select {
+    min-height: 44px;
+    font-size: clamp(0.84rem, 1.4vw, 1.05rem);
   }
 }
 
